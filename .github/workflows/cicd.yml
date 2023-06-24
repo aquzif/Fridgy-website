@@ -1,0 +1,105 @@
+name: "CI/CD"
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+
+jobs:
+  test:
+    services:
+      mysql:
+        image: mysql:8.0.21
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: ""
+          MYSQL_DATABASE: fridgy
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - uses: actions/checkout@v3
+      - name: Install node dependencies
+        run: npm install
+      - name: Execute tests (frontend) via Jest
+        run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - uses: actions/checkout@v3
+      - name: Install node dependencies
+        run: npm install
+      - name: Build assets
+        run: npm run build
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: [ test,build ]
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: 'placeholder'
+      - run: echo $(ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} )
+      - name: Adding Known Hosts
+        run: ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - uses: actions/checkout@v3
+      - name: Install node dependencies
+        run: npm install --force
+      - name: Build assets
+        run: npm run build
+      - name: Remove unnesesary files
+        run: |
+          rm -rf node_modules
+      - name: Remove old files
+        run: |
+          ssh -p 222 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/*"
+      - name: Deploy to server
+        run: rsync -e 'ssh -p 222' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_DEV }}
+  deploy-prod:
+    runs-on: ubuntu-latest
+    needs: [ test,build ]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: 'placeholder'
+      - run: echo $(ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} )
+      - name: Adding Known Hosts
+        run: ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - uses: actions/checkout@v3
+      - name: Install node dependencies
+        run: npm install --force
+      - name: Build assets
+        run: npm run build
+      - name: Remove unnesesary files
+        run: |
+          rm -rf node_modules
+      - name: Remove old files
+        run: |
+          ssh -p 222 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_PROD }}/*"
+      - name: Deploy to server
+        run: rsync -e 'ssh -p 222' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_PROD }}
