@@ -72,7 +72,7 @@ jobs:
         run: |
           ssh -p 222 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/*"
       - name: Deploy to server
-        run: rsync -e 'ssh -p 222' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_DEV }}
+        run: rsync -e 'ssh -p 222' -avz  ./ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_DEV }}
   deploy-prod:
     runs-on: ubuntu-latest
     needs: [ test,build ]
@@ -102,4 +102,4 @@ jobs:
         run: |
           ssh -p 222 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_PROD }}/*"
       - name: Deploy to server
-        run: rsync -e 'ssh -p 222' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_PROD }}
+        run: rsync -e 'ssh -p 222' -avz  ./ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_PROD }}

@@ -1,6 +1,5 @@
 {
-  "name": "my-app",
-  "homepage": "/build",
+  "name": "Fridgy",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
