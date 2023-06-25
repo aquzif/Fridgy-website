@@ -123,7 +123,7 @@ const LoginView = () => {
         <Background>
             <Container>
                 <Title>
-                    Witaj w fridgy!
+                    Witaj w fridgy
                 </Title>
                 <form onSubmit={formik.handleSubmit}>
                     <Input
