@@ -23,7 +23,7 @@ skipWaiting();
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST);
-console.log(process.env.PUBLIC_URL);
+
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
 // https://developers.google.com/web/fundamentals/architecture/app-shell
@@ -46,7 +46,8 @@ registerRoute(
 
         return true;
     },
-    createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+    //createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+    createHandlerBoundToURL( '/index.html')
 );
 
 // An example runtime caching route for requests that aren't handled by the
