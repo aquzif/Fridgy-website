@@ -1,0 +1,24 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+// Variables
+@import 'variables';
+
+
+
+* {
+  font-family: 'Montserrat', sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+}
+
+#root {
+  -webkit-overflow-scrolling: touch;
+  height: 100vh;
+  overflow: auto;
+}
+
