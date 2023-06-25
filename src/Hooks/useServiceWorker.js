@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import * as serviceWorkerRegistration from "../serviceWorkerRegistration";
 export const useServiceWorker = () => {
     const [waitingWorker, setWaitingWorker] = useState(null);
     const [showReload, setShowReload] = useState (false);
