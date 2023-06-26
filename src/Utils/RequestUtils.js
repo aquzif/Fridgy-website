@@ -2,6 +2,7 @@ import store from "@/Store/store";
 import {expire} from "@/Store/Reducers/AuthReducer";
 import toast from "react-hot-toast";
 import UserUtils from "@/Utils/UserUtils";
+import NetworkUtils from "@/Utils/NetworkUtils";
 
 export default class RequestUtils{
 
@@ -54,6 +55,9 @@ export default class RequestUtils{
     static async request(url, method, data, headers){
 
         let toReturn = {};
+
+        if(url[0] === '/' && NetworkUtils.isLocalhost())
+            url = 'http://localhost:8000' + url;
 
         let response = await fetch(url, {
             method: method,
