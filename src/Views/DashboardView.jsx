@@ -3,6 +3,7 @@ import Navigation from "@/Components/Navigation/Navigation";
 import {useEffect, useState} from "react";
 import styled from "styled-components";
 import TopBar from "@/Components/TopBar/TopBar";
+import {useMediaQuery} from "@/Hooks/useMediaQuery";
 
 
 const Container = styled.div`
@@ -23,10 +24,16 @@ const Flex = styled.div`
     flex-direction: row;
 `;
 
+const OutletContainer = styled.div`
+  width: 100%;
+  overflow: auto;
+`;
+
 const DashboardView = () => {
 
     const [navOpen, setNavOpen] = useState(true);
 
+    const mobile = useMediaQuery('(max-width: 768px)');
     const loc = useLocation();
 
     useEffect(() => {
@@ -41,7 +48,13 @@ const DashboardView = () => {
             <Navigation open={navOpen} onClose={onNavClick} />
             <Container>
                 <TopBar onOpen={onNavClick} />
-                <Outlet />
+                <OutletContainer
+                    style={{
+                        height: mobile ? 'calc(100% - 71px)' : 'calc(100% - 51px)'
+                    }}
+                >
+                    <Outlet />
+                </OutletContainer>
             </Container>
         </Flex>
     )

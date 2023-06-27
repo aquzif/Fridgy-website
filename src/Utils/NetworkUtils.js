@@ -1,7 +1,10 @@
 
 export default class NetworkUtils {
+
+    static isOnline() {
+        return window.navigator.onLine;
+    }
     static isLocalhost() {
-        console.log(window.location.hostname);
         return window.location.hostname === "localhost";
     }
 }
