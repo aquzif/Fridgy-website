@@ -6,6 +6,8 @@ import store from "@/Store/store";
 import '@/App/GlobalStyles/index.scss';
 import {useServiceWorker} from "@/Hooks/useServiceWorker";
 import {useEffect} from "react";
+import {ThemeProvider} from "@mui/material";
+import theme from "@/Theme/theme";
 
 const App = () => {
 
@@ -21,10 +23,12 @@ const App = () => {
 
     return (
         <>
-            <Provider store={store}>
-                <Toaster />
-                <Router />
-            </Provider>
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <Toaster />
+                    <Router />
+                </Provider>
+            </ThemeProvider>
 
         </>
     );

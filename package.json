@@ -9,6 +9,7 @@
     "@iconify/icons-ic": "^1.2.13",
     "@iconify/icons-mdi": "^1.2.46",
     "@iconify/react": "^4.1.1",
+    "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.6",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.16.5",
