@@ -1,13 +1,16 @@
 import styled from "styled-components";
 import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import {request} from "@/Store/Reducers/ShoppingListReducer";
+import {request, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
 import store from "@/Store/store";
 import {FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Tooltip} from "@mui/material";
 import SpeedDial from "@/Components/SpeedDial/SpeedDial";
 import {Add, Delete, EditNote, Remove} from "@mui/icons-material";
 import FAB from "@/Components/FAB/FAB";
 import ShoppingListEditDialog from "@/Dialogs/ShoppingListEditDialog";
+import ConfirmDialog from "@/Dialogs/ConfirmDialog";
+import toast from "react-hot-toast";
+import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 
 const Container = styled.div`
   max-width: 800px;
@@ -29,6 +32,7 @@ const ShoppingListView = () => {
 
     const [shoppingListCUDialogOpen, setShoppingListCUDialogOpen] = useState(false);
     const [editShoppingListID, setEditShoppingListID] = useState(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const {
         shoppingLists,
@@ -52,15 +56,46 @@ const ShoppingListView = () => {
     }
 
     const handleOpenShoppingListEditDialog = () => {
-        setEditShoppingListID(selectedShoppingListID);
+
         setShoppingListCUDialogOpen(true);
+        setEditShoppingListID(selectedShoppingListID);
     }
+
+    const handleShoppingListDeleteButton = () => {
+        setDeleteDialogOpen(true);
+    }
+
+    const handleShoppingListChange = (e) => {
+        store.dispatch(selectShoppingList(e.target.value));
+    }
+
+    const handleConfirmDialogClose = async (result) => {
+        setDeleteDialogOpen(false);
+        if(result){
+            const result = await toast.promise(ShoppingListsAPI.delete(selectedShoppingListID),{
+                loading: 'Usuwanie listy zakupów...',
+                success: 'Lista zakupów została usunięta',
+                error: 'Nie udało się usunąć listy zakupów'
+            });
+
+            store.dispatch(selectShoppingList(0));
+            store.dispatch(request());
+
+
+        }
+    }
+
 
 
 
 
     return (
         <Container>
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onClose={handleConfirmDialogClose}
+                subtitle={'Czy na pewno chcesz usunąć listę zakupów?'}
+            />
             <ShoppingListEditDialog
                 open={shoppingListCUDialogOpen}
                 editShoppingListID={editShoppingListID}
@@ -69,7 +104,7 @@ const ShoppingListView = () => {
             <Grid container spacing={2} >
                 <Grid item xs={12} md={6} >
                     <h2>Lista zakupów</h2>
-                    <h5>{ selectedShoppingListID > 0 ? selectedShoppingList.name : 'Wybierz Listę zakupów bądź utwórz nową' }</h5>
+                    {selectedShoppingListID == 0 && <h5>Wybierz Listę zakupów bądź utwórz nową</h5> }
                 </Grid>
                 <Grid item xs={12} md={6} >
                     <FormControl variant="standard" fullWidth>
@@ -77,11 +112,12 @@ const ShoppingListView = () => {
                         <Select
                             disabled={!Boolean(selectedShoppingListID)}
                             value={selectedShoppingListID}
+                            onChange={handleShoppingListChange}
                         >
                             {selectedShoppingListID === 0 && (
                                 <MenuItem value={0}>Brak utworzonych list</MenuItem>
                             )}
-                            {shoppingLists.map((shoppingList) => (
+                            {shoppingLists?.map((shoppingList) => (
                                 <MenuItem key={shoppingList.id} value={shoppingList.id}>{shoppingList.name}</MenuItem>
                             ))}
 
@@ -96,13 +132,15 @@ const ShoppingListView = () => {
                                 <Add />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title={'Usuń listę'} arrow>
-                            <IconButton >
+                        <Tooltip title={'Usuń listę'} arrow >
+                            <IconButton disabled={shoppingLists.length === 0}
+                                onClick={handleShoppingListDeleteButton}
+                            >
                                 <Delete />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title={'Edytuj listę'} arrow>
-                            <IconButton onClick={handleOpenShoppingListEditDialog} >
+                            <IconButton disabled={shoppingLists.length === 0} onClick={handleOpenShoppingListEditDialog} >
                                 <EditNote />
                             </IconButton>
                         </Tooltip>

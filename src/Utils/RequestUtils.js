@@ -3,6 +3,7 @@ import {expire} from "@/Store/Reducers/AuthReducer";
 import toast from "react-hot-toast";
 import UserUtils from "@/Utils/UserUtils";
 import NetworkUtils from "@/Utils/NetworkUtils";
+import StringUtils from "@/Utils/StringUtils";
 
 export default class RequestUtils{
 
@@ -24,7 +25,7 @@ export default class RequestUtils{
     }
 
     static async apiPost(url, data = {}, headers = {}){
-        return await this.request(url, 'POST', data , {
+        return await this.request(url, 'POST', StringUtils.trimObjectValues(data) , {
             ...headers,
             'Authorization': 'Bearer ' + UserUtils.getUserToken(),
         });
