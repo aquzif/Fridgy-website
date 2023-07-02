@@ -31,13 +31,14 @@ const ShoppingListView = () => {
 
 
     const [shoppingListCUDialogOpen, setShoppingListCUDialogOpen] = useState(false);
-    const [editShoppingListID, setEditShoppingListID] = useState(null);
+    const [editMode,setEditMode] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const {
         shoppingLists,
         selectedShoppingListID
     } = useSelector(state => state.shoppingListReducer);
+
     const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
 
 
@@ -51,14 +52,13 @@ const ShoppingListView = () => {
     }
 
     const handleOpenShoppingListCreateDialog = () => {
-        setEditShoppingListID(null);
+        setEditMode(false);
         setShoppingListCUDialogOpen(true);
     }
 
     const handleOpenShoppingListEditDialog = () => {
-
+        setEditMode(true);
         setShoppingListCUDialogOpen(true);
-        setEditShoppingListID(selectedShoppingListID);
     }
 
     const handleShoppingListDeleteButton = () => {
@@ -98,7 +98,7 @@ const ShoppingListView = () => {
             />
             <ShoppingListEditDialog
                 open={shoppingListCUDialogOpen}
-                editShoppingListID={editShoppingListID}
+                editMode={editMode}
                 onClose={handleCloseShoppingListCUDialog}
             />
             <Grid container spacing={2} >

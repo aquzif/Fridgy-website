@@ -27,24 +27,23 @@ const ShoppingListEditDialog = (
     {
         open = false,
         onClose = () => {},
-        editShoppingListID = null
+        editMode=false,
     }
 ) => {
 
-    const [editMode, setEditMode] = useState(false);
     const mainInput = useRef(null);
 
     const {
-        shoppingLists
+        shoppingLists,
+        selectedShoppingListID
     } = useSelector(state => state.shoppingListReducer);
 
     const handleClose = () => {
         onClose();
     }
 
-    useEffect(() => {
-       setEditMode(editShoppingListID !== null && editShoppingListID > 0);
-    },[editShoppingListID]);
+    const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
+    const editShoppingListID = selectedShoppingList?.id;
 
     const formik = useFormik({
         initialValues: {
@@ -66,14 +65,11 @@ const ShoppingListEditDialog = (
                     success: 'Lista zakupów została utworzona',
                     error: 'Nie udało się utworzyć listy zakupów'
                 });
-
-                store.dispatch(request());
                 store.dispatch(selectShoppingList(result.data.id));
 
-                handleClose();
             }
-
-
+            store.dispatch(request());
+            handleClose();
         }
     });
     useEffect(() => {
@@ -82,7 +78,13 @@ const ShoppingListEditDialog = (
             formik.resetForm();
         }
 
-    }, [open,editShoppingListID]);
+        if(editMode){
+            formik.setValues({
+                name: selectedShoppingList?.name
+            });
+        }
+
+    }, [open,editMode]);
 
     return (
             <Dialog
