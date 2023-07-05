@@ -23,7 +23,7 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const ShoppingListEditDialog = (
+const ShoppingListCEDialog = (
     {
         open = false,
         onClose = () => {},
@@ -107,7 +107,6 @@ const ShoppingListEditDialog = (
                         fullWidth
                         error={formik.touched.name && Boolean(formik.errors.name)}
                         helperText={formik.touched.name && formik.errors.name}
-
                     />
                 </DialogContent>
                 <DialogActions>
@@ -118,4 +117,4 @@ const ShoppingListEditDialog = (
     )
 }
 
-export default ShoppingListEditDialog;
+export default ShoppingListCEDialog;

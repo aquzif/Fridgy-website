@@ -7,10 +7,11 @@ import {FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Tooltip} fr
 import SpeedDial from "@/Components/SpeedDial/SpeedDial";
 import {Add, Delete, EditNote, Remove} from "@mui/icons-material";
 import FAB from "@/Components/FAB/FAB";
-import ShoppingListEditDialog from "@/Dialogs/ShoppingListEditDialog";
+import ShoppingListCEDialog from "@/Dialogs/ShoppingListCEDialog";
 import ConfirmDialog from "@/Dialogs/ConfirmDialog";
 import toast from "react-hot-toast";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
+import ShoppingListEntryCEDialog from "@/Dialogs/ShoppingListEntryCEDialog";
 
 const Container = styled.div`
   max-width: 800px;
@@ -31,6 +32,7 @@ const ShoppingListView = () => {
 
 
     const [shoppingListCUDialogOpen, setShoppingListCUDialogOpen] = useState(false);
+    const [shoppingListEntryCUDialogOpen, setShoppingListEntryCUDialogOpen] = useState(false);
     const [editMode,setEditMode] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -40,8 +42,6 @@ const ShoppingListView = () => {
     } = useSelector(state => state.shoppingListReducer);
 
     const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
-
-
 
     useEffect(() => {
         store.dispatch(request());
@@ -69,6 +69,16 @@ const ShoppingListView = () => {
         store.dispatch(selectShoppingList(e.target.value));
     }
 
+    const handleOpenShoppingListEntryCreateDialog = () => {
+        setEditMode(false);
+        setShoppingListEntryCUDialogOpen(true);
+    }
+
+    const handleOpenShoppingListEntryEditDialog = () => {
+        setEditMode(true);
+        setShoppingListEntryCUDialogOpen(true);
+    }
+
     const handleConfirmDialogClose = async (result) => {
         setDeleteDialogOpen(false);
         if(result){
@@ -85,10 +95,12 @@ const ShoppingListView = () => {
         }
     }
 
+    const handleCloseShoppingListEntryCUDialog = async (result) => {
+        setEditMode(false);
+        setShoppingListEntryCUDialogOpen(false);
 
-
-
-
+    }
+    console.log(selectedShoppingList)
     return (
         <Container>
             <ConfirmDialog
@@ -96,10 +108,15 @@ const ShoppingListView = () => {
                 onClose={handleConfirmDialogClose}
                 subtitle={'Czy na pewno chcesz usunąć listę zakupów?'}
             />
-            <ShoppingListEditDialog
+            <ShoppingListCEDialog
                 open={shoppingListCUDialogOpen}
                 editMode={editMode}
                 onClose={handleCloseShoppingListCUDialog}
+            />
+            <ShoppingListEntryCEDialog
+                open={shoppingListEntryCUDialogOpen}
+                editMode={editMode}
+                onClose={handleCloseShoppingListEntryCUDialog}
             />
             <Grid container spacing={2} >
                 <Grid item xs={12} md={6} >
@@ -147,7 +164,9 @@ const ShoppingListView = () => {
                     </div>
                 </Grid>
             </Grid>
-            <FAB />
+            <FAB
+                onClick={handleOpenShoppingListEntryCreateDialog}
+            />
         </Container>
     )
 }
