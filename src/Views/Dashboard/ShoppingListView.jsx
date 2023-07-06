@@ -12,6 +12,7 @@ import ConfirmDialog from "@/Dialogs/ConfirmDialog";
 import toast from "react-hot-toast";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import ShoppingListEntryCEDialog from "@/Dialogs/ShoppingListEntryCEDialog";
+import ShoppingListEntry from "@/Components/ShoppingListEntry/ShoppingListEntry";
 
 const Container = styled.div`
   max-width: 800px;
@@ -27,6 +28,11 @@ const Container = styled.div`
 
 `;
 
+const EntriesContainer = styled.div`
+  max-width: 400px;
+  margin: 0 auto;
+`;
+
 
 const ShoppingListView = () => {
 
@@ -36,10 +42,11 @@ const ShoppingListView = () => {
     const [editMode,setEditMode] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-    const {
+    let {
         shoppingLists,
         selectedShoppingListID
     } = useSelector(state => state.shoppingListReducer);
+    selectedShoppingListID = selectedShoppingListID || 0;
 
     const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
 
@@ -91,7 +98,6 @@ const ShoppingListView = () => {
             store.dispatch(selectShoppingList(0));
             store.dispatch(request());
 
-
         }
     }
 
@@ -100,7 +106,8 @@ const ShoppingListView = () => {
         setShoppingListEntryCUDialogOpen(false);
 
     }
-    console.log(selectedShoppingList)
+
+
     return (
         <Container>
             <ConfirmDialog
@@ -131,7 +138,7 @@ const ShoppingListView = () => {
                             value={selectedShoppingListID}
                             onChange={handleShoppingListChange}
                         >
-                            {selectedShoppingListID === 0 && (
+                            {(selectedShoppingListID) === 0 && (
                                 <MenuItem value={0}>Brak utworzonych list</MenuItem>
                             )}
                             {shoppingLists?.map((shoppingList) => (
@@ -164,6 +171,16 @@ const ShoppingListView = () => {
                     </div>
                 </Grid>
             </Grid>
+            <EntriesContainer>
+                {
+                    selectedShoppingList?.entries?.map((entry) => (
+                        <ShoppingListEntry
+                            shoppingList={selectedShoppingList}
+                            key={entry.id}
+                            data={entry} />
+                    ))
+                }
+            </EntriesContainer>
             <FAB
                 onClick={handleOpenShoppingListEntryCreateDialog}
             />

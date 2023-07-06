@@ -1,12 +1,11 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField} from "@mui/material";
-import {forwardRef, useEffect, useRef, useState} from "react";
+import {forwardRef, useEffect, useRef} from "react";
 import {useFormik} from "formik";
 import ShoppingListEntrySchema from "@/Schemas/ShoppingListEntrySchema";
 import {useSelector} from "react-redux";
 import toast from "react-hot-toast";
-import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import store from "@/Store/store";
-import {request, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
+import {request} from "@/Store/Reducers/ShoppingListReducer";
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -17,11 +16,10 @@ const ShoppingListEntryCEDialog = (
     {
         open = false,
         onClose = (res) => {},
+        editMode = false,
         editEntryID = null,
     }
 ) => {
-
-    const [editMode, setEditMode] = useState(false);
 
     const {
         shoppingLists,
@@ -32,9 +30,12 @@ const ShoppingListEntryCEDialog = (
     const mainInput = useRef(null);
     const formik = useFormik({
         initialValues: {
-            name: '',
+            product_name: '',
+            unit_name: '',
+            amount: 0,
         },
         validationSchema: ShoppingListEntrySchema,
+        validateOnChange: true,
         onSubmit: async (values) => {
             if(!selectedShoppingList){
                 toast.error('Nie wybrano listy zakupów');
@@ -63,10 +64,25 @@ const ShoppingListEntryCEDialog = (
     }
 
     useEffect(() => {
-        if(editEntryID){
-            setEditMode(true);
+        if(open){
+            mainInput?.current?.focus();
+            formik.resetForm();
         }
-    },[editEntryID])
+
+        if(editMode){
+            const entryForEdit = selectedShoppingList?.entries.find((entry) => entry.id === editEntryID);
+
+            if(!entryForEdit){
+                toast.error('Nie znaleziono wpisu');
+                return;
+            }
+
+            formik.setValues({
+                name: entryForEdit?.name
+            });
+        }
+
+    }, [open,editMode]);
 
     return (
         <Dialog
@@ -75,26 +91,50 @@ const ShoppingListEntryCEDialog = (
             keepMounted
             onClose={handleClose}
         >
-            <DialogTitle>{
-                editMode ? "Zmodyfikuj wpis" : "Utwórz wpis"
-            }</DialogTitle>
-            <DialogContent>
-                <TextField
-                    inputRef={mainInput}
-                    variant={'standard'}
-                    name={'name'}
-                    label={'Nazwa wpisu'}
-                    value={formik.values.name}
-                    onChange={formik.handleChange}
-                    fullWidth
-                    error={formik.touched.name && Boolean(formik.errors.name)}
-                    helperText={formik.touched.name && formik.errors.name}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button color={'warning'} onClick={handleClose}>Anuluj</Button>
-                <Button onClick={formik.handleSubmit} >{editMode ? "Zaktualizuj" : 'Stwórz'}</Button>
-            </DialogActions>
+            <DialogTitle>
+                {editMode ? "Zmodyfikuj wpis" : "Utwórz wpis"}
+            </DialogTitle>
+            <form onSubmit={formik.handleSubmit}>
+                <DialogContent>
+                    <TextField
+                        inputRef={mainInput}
+                        variant={'standard'}
+                        name={'product_name'}
+                        label={'Nazwa wpisu'}
+                        value={formik.values.product_name}
+                        onChange={formik.handleChange}
+                        fullWidth
+                        error={formik.touched.product_name && Boolean(formik.errors.product_name)}
+                        helperText={formik.touched.product_name && formik.errors.product_name}
+                    />
+                    <TextField
+                        variant={'standard'}
+                        name={'unit_name'}
+                        label={'Jednostka'}
+                        value={formik.values.unit_name}
+                        onChange={formik.handleChange}
+                        fullWidth
+                        error={formik.touched.unit_name && Boolean(formik.errors.unit_name)}
+                        helperText={formik.touched.unit_name && formik.errors.unit_name}
+                    />
+                    <TextField
+                        variant={'standard'}
+                        name={'amount'}
+                        type="number"
+                        label={'Ilość'}
+                        value={formik.values.amount}
+                        onChange={formik.handleChange}
+                        fullWidth
+                        error={formik.touched.amount && Boolean(formik.errors.amount)}
+                        helperText={formik.touched.amount && formik.errors.amount}
+                    />
+
+                </DialogContent>
+                <DialogActions>
+                    <Button color={'warning'} onClick={handleClose}>Anuluj</Button>
+                    <Button type={'submit'} onClick={formik.handleSubmit} >{editMode ? "Zaktualizuj" : 'Stwórz'}</Button>
+                </DialogActions>
+            </form>
         </Dialog>
     )
 

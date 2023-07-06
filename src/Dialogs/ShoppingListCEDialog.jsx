@@ -96,23 +96,25 @@ const ShoppingListCEDialog = (
                 <DialogTitle>{
                     editMode ? "Zmodyfikuj listę zaupów" : "Utwórz nową listę zakupów"
                 }</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        inputRef={mainInput}
-                        variant={'standard'}
-                        name={'name'}
-                        label={'Nazwa listy zakupów'}
-                        value={formik.values.name}
-                        onChange={formik.handleChange}
-                        fullWidth
-                        error={formik.touched.name && Boolean(formik.errors.name)}
-                        helperText={formik.touched.name && formik.errors.name}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button color={'warning'} onClick={handleClose}>Anuluj</Button>
-                    <Button onClick={formik.handleSubmit} >{editMode ? "Zaktualizuj" : 'Stwórz'}</Button>
-                </DialogActions>
+                <form onSubmit={formik.handleSubmit}>
+                    <DialogContent>
+                        <TextField
+                            inputRef={mainInput}
+                            variant={'standard'}
+                            name={'name'}
+                            label={'Nazwa listy zakupów'}
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            fullWidth
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color={'warning'} onClick={handleClose}>Anuluj</Button>
+                        <Button onClick={formik.handleSubmit} >{editMode ? "Zaktualizuj" : 'Stwórz'}</Button>
+                    </DialogActions>
+                </form>
             </Dialog>
     )
 }

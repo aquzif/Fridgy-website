@@ -3,6 +3,7 @@ import requestShoppingListsAction from "@/Store/Actions/ShoppingListReducer/requ
 import fetchShoppingListSuccessAction from "@/Store/Actions/ShoppingListReducer/fetchShoppingListSuccessAction";
 import fetchShoppingListFailureAction from "@/Store/Actions/ShoppingListReducer/fetchShoppingListFailureAction";
 import selectShoppingListAction from "@/Store/Actions/ShoppingListReducer/selectShoppingListAction";
+import toggleShoppingListEntryCheckAction from "@/Store/Actions/ShoppingListReducer/toggleShoppingListEntryCheckAction";
 
 
 const initialState = {
@@ -22,6 +23,7 @@ const shoppingListSlice = createSlice({
         success: fetchShoppingListSuccessAction,
         failure: fetchShoppingListFailureAction,
         selectShoppingList: selectShoppingListAction,
+        toggleEntry: toggleShoppingListEntryCheckAction
     }
 });
 
@@ -30,5 +32,6 @@ export const {request
     ,success
     ,failure
     ,selectShoppingList
+    ,toggleEntry
 } = shoppingListSlice.actions;
 export default shoppingListSlice.reducer;
