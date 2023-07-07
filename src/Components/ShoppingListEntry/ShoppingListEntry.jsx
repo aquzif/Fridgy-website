@@ -40,7 +40,8 @@ const Subtitle = styled.h4`
 const ShoppingListEntry = (
     {
         data,
-        shoppingList
+        shoppingList,
+        onEdit = (entryID) => {}
     }
 ) => {
 
@@ -57,6 +58,9 @@ const ShoppingListEntry = (
     }
 
 
+    const handleOnEdit = () => {
+        onEdit(data.id);
+    }
 
 
     return <Container onMouseEnter={() => setHover(true)}
@@ -75,7 +79,7 @@ const ShoppingListEntry = (
         </div>
         <div style={{padding: '5px'}} >
             { hover &&
-                <IconButton>
+                <IconButton onClick={handleOnEdit}  >
                 <Edit />
             </IconButton>
             }

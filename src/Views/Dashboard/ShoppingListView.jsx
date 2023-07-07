@@ -42,6 +42,8 @@ const ShoppingListView = () => {
     const [editMode,setEditMode] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
+    const [editEntryID,setEditEntryID] = useState(null);
+
     let {
         shoppingLists,
         selectedShoppingListID
@@ -81,7 +83,8 @@ const ShoppingListView = () => {
         setShoppingListEntryCUDialogOpen(true);
     }
 
-    const handleOpenShoppingListEntryEditDialog = () => {
+    const handleOpenShoppingListEntryEditDialog = (entryID) => {
+        setEditEntryID(entryID);
         setEditMode(true);
         setShoppingListEntryCUDialogOpen(true);
     }
@@ -121,6 +124,7 @@ const ShoppingListView = () => {
                 onClose={handleCloseShoppingListCUDialog}
             />
             <ShoppingListEntryCEDialog
+                editEntryID={editEntryID}
                 open={shoppingListEntryCUDialogOpen}
                 editMode={editMode}
                 onClose={handleCloseShoppingListEntryCUDialog}
@@ -176,6 +180,7 @@ const ShoppingListView = () => {
                     selectedShoppingList?.entries?.map((entry) => (
                         <ShoppingListEntry
                             shoppingList={selectedShoppingList}
+                            onEdit={handleOpenShoppingListEntryEditDialog}
                             key={entry.id}
                             data={entry} />
                     ))

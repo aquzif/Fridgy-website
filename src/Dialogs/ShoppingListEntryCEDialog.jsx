@@ -78,7 +78,9 @@ const ShoppingListEntryCEDialog = (
             }
 
             formik.setValues({
-                name: entryForEdit?.name
+                product_name: entryForEdit?.product_name,
+                unit_name: entryForEdit?.unit_name,
+                amount: entryForEdit?.amount,
             });
         }
 
