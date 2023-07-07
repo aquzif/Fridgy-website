@@ -17,12 +17,13 @@ function* fetchShoppingList(){
     const {data} = response;
     const {selectedShoppingListID} = store.getState().shoppingListReducer;
 
-    if(data.length === 0)
-        yield put(selectShoppingList(0));
-    else if(data.filter(list => list.id === selectedShoppingListID).length === 0)
-        yield put(selectShoppingList(data[0]?.id));
 
-    yield put(success(response.data));
+    if(data?.data?.length === 0)
+        yield put(selectShoppingList(0));
+    else if(data?.data?.filter(list => list.id === selectedShoppingListID).length === 0)
+        yield put(selectShoppingList(data.data[0]?.id));
+
+    yield put(success(data.data));
 
 }
 

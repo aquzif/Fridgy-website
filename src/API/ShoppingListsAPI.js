@@ -11,7 +11,13 @@ export default class ShoppingListsAPI {
     }
 
     static async create(data) {
-        return await RequestUtils.apiPost('/api/shopping-list', data);
+        const result = await RequestUtils.apiPost('/api/shopping-list', data);
+
+        if(result.status !== 201){
+            throw new Error('ShoppingListsAPI.create() failed, status: ' + result.status);
+        }
+
+        return result;
     }
 
     static async update(id, data) {
