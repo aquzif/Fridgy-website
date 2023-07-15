@@ -25,6 +25,7 @@ const Container = styled.div`
     width: 250px;
     height: 100vh;
     transition: left 0.3s ease-in-out;
+    z-index: 2000000; /* it must be in the frant always*/
 
     @media (max-width: 768px) {
         width: 100vw;
