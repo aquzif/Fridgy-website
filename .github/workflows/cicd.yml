@@ -53,9 +53,9 @@ jobs:
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: 'placeholder'
-      - run: echo $(ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} )
+      - run: echo $(ssh-keyscan -p 22 ${{ secrets.SERVER_HOST }} )
       - name: Adding Known Hosts
-        run: ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        run: ssh-keyscan -p 22 ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
@@ -70,9 +70,9 @@ jobs:
           rm -rf node_modules
       - name: Remove old files
         run: |
-          ssh -p 222 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/*"
+          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/*"
       - name: Deploy to server
-        run: rsync -e 'ssh -p 222' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_DEV }}
+        run: rsync -e 'ssh -p 22' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_DEV }}
   deploy-prod:
     runs-on: ubuntu-latest
     needs: [ test,build ]
@@ -83,9 +83,9 @@ jobs:
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: 'placeholder'
-      - run: echo $(ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} )
+      - run: echo $(ssh-keyscan -p 22 ${{ secrets.SERVER_HOST }} )
       - name: Adding Known Hosts
-        run: ssh-keyscan -p 222 ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        run: ssh-keyscan -p 22 ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
@@ -100,6 +100,6 @@ jobs:
           rm -rf node_modules
       - name: Remove old files
         run: |
-          ssh -p 222 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_PROD }}/*"
+          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_PROD }}/*"
       - name: Deploy to server
-        run: rsync -e 'ssh -p 222' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_PROD }}
+        run: rsync -e 'ssh -p 22' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_PROD }}
