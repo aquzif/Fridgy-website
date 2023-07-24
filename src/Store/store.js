@@ -5,13 +5,15 @@ import shoppingListReducer from "@/Store/Reducers/ShoppingListReducer";
 
 import createSagaMiddleware from 'redux-saga'
 import saga from "@/Store/sagas";
+import globalUnitReducer from "@/Store/Reducers/GlobalUnitReducer";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
     reducer: {
         authReducer,
-        shoppingListReducer
+        shoppingListReducer,
+        globalUnitReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 });

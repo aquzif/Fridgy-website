@@ -19,7 +19,7 @@ const shoppingListSlice = createSlice({
     name: 'shoppingList',
     initialState,
     reducers: {
-        request: requestShoppingListsAction,
+        requestShoppingLists: requestShoppingListsAction,
         success: fetchShoppingListSuccessAction,
         failure: fetchShoppingListFailureAction,
         selectShoppingList: selectShoppingListAction,
@@ -28,7 +28,7 @@ const shoppingListSlice = createSlice({
 });
 
 
-export const {request
+export const {requestShoppingLists
     ,success
     ,failure
     ,selectShoppingList
