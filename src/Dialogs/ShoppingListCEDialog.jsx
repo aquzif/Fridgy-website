@@ -76,13 +76,16 @@ const ShoppingListCEDialog = (
         if(open){
             mainInput?.current?.focus();
             formik.resetForm();
+
+            if(editMode){
+                formik.setValues({
+                    name: selectedShoppingList?.name
+                });
+            }
+
         }
 
-        if(editMode){
-            formik.setValues({
-                name: selectedShoppingList?.name
-            });
-        }
+
 
     }, [open,editMode]);
 

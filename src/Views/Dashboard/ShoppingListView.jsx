@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import ShoppingListEntryCEDialog from "@/Dialogs/ShoppingListEntryCEDialog";
 import ShoppingListEntry from "@/Components/ShoppingListEntry/ShoppingListEntry";
+import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
 
 const Container = styled.div`
   max-width: 800px;
@@ -88,6 +89,12 @@ const ShoppingListView = () => {
         setEditEntryID(entryID);
         setEditMode(true);
         setShoppingListEntryCUDialogOpen(true);
+    }
+
+    const handleOpenShoppingListEntryDeleteDialog = async (entryID) => {
+        const result = await ShoppingListEntriesAPI.delete(selectedShoppingListID,entryID);
+
+        store.dispatch(requestShoppingLists());
     }
 
     const handleConfirmDialogClose = async (result) => {
@@ -183,6 +190,7 @@ const ShoppingListView = () => {
                         <ShoppingListEntry
                             shoppingList={selectedShoppingList}
                             onEdit={handleOpenShoppingListEntryEditDialog}
+                            onDelete={handleOpenShoppingListEntryDeleteDialog}
                             key={entry.id}
                             data={entry} />
                     ))

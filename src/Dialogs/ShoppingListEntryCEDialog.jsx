@@ -44,9 +44,6 @@ const ShoppingListEntryCEDialog = (
 
     const defaultUnit = globalUnits.find((unit) => unit.default);
 
-
-
-
     const mainInput = useRef(null);
     const formik = useFormik({
         initialValues: {
@@ -95,31 +92,32 @@ const ShoppingListEntryCEDialog = (
             formik.resetForm();
             formik.setFieldValue('unit_id', defaultUnit?.id || '');
 
-        }
+            if(editMode){
+                const entryForEdit = selectedShoppingList?.entries.find((entry) => entry.id === editEntryID);
 
-        if(editMode){
-            const entryForEdit = selectedShoppingList?.entries.find((entry) => entry.id === editEntryID);
+                if(!entryForEdit){
+                    toast.error('Nie znaleziono wpisu');
+                    return;
+                }
 
-            if(!entryForEdit){
-                toast.error('Nie znaleziono wpisu');
-                return;
+                formik.setValues({
+                    type: entryForEdit?.type,
+                    product_name: entryForEdit?.product_name,
+                    unit_id: entryForEdit?.unit_id,
+                    amount: entryForEdit?.amount,
+                });
             }
-
-            formik.setValues({
-                type: entryForEdit?.type,
-                product_name: entryForEdit?.product_name,
-                unit_id: entryForEdit?.unit_id,
-                amount: entryForEdit?.amount,
-            });
         }
-
     }, [open,editMode]);
+
 
     return (
         <Dialog
             open={open}
             TransitionComponent={Transition}
             keepMounted
+            fullWidth
+            maxWidth={'sm'}
             onClose={handleClose}
         >
             <DialogTitle>
@@ -128,6 +126,27 @@ const ShoppingListEntryCEDialog = (
             <form onSubmit={formik.handleSubmit}>
                 <DialogContent>
                     <Grid container spacing={2}>
+                        <Grid item xs={12} md={4} >
+                            <FormControl fullWidth variant={'standard'}
+                                         error={formik.touched.type && Boolean(formik.errors.type)}
+                            >
+                                <InputLabel>Typ Wpisu</InputLabel>
+                                <Select
+                                    disabled={editMode}
+                                    value={formik.values.type}
+                                    variant={'standard'}
+                                    name={'type'}
+                                    label="Jednostka"
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.type && Boolean(formik.errors.type)}
+                                >
+                                    <MenuItem key={'raw'} value={'raw'}>Podstawowy</MenuItem>
+                                    <MenuItem key={'raw_product'} value={'raw_product'}>Produkt</MenuItem>
+                                </Select>
+                                <FormHelperText>{formik.touched.type && formik.errors.type}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} md={8} />
                         <Grid item xs={12} >
                             <TextField
                                 inputRef={mainInput}
@@ -141,38 +160,44 @@ const ShoppingListEntryCEDialog = (
                                 helperText={formik.touched.product_name && formik.errors.product_name}
                             />
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <FormControl fullWidth variant={'standard'}
-                                         error={formik.touched.unit_id && Boolean(formik.errors.unit_id)}
-                            >
-                                <InputLabel>Jednostka</InputLabel>
-                                <Select
-                                    value={formik.values.unit_id}
-                                    variant={'standard'}
-                                    name={'unit_id'}
-                                    label="Jednostka"
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.unit_id && Boolean(formik.errors.unit_id)}
-                                >
-                                    {globalUnits.map((unit) => <MenuItem key={unit.id} value={unit.id}>{unit.name}</MenuItem>)}
-                                </Select>
-                                <FormHelperText>{formik.touched.unit_id && formik.errors.unit_id}</FormHelperText>
-                            </FormControl>
+                        {
+                            formik.values.type === 'raw_product' && (
+                                <>
+                                    <Grid item xs={12} md={6}>
+                                        <FormControl fullWidth variant={'standard'}
+                                                     error={formik.touched.unit_id && Boolean(formik.errors.unit_id)}
+                                        >
+                                            <InputLabel>Jednostka</InputLabel>
+                                            <Select
+                                                value={formik.values.unit_id}
+                                                variant={'standard'}
+                                                name={'unit_id'}
+                                                label="Jednostka"
+                                                onChange={formik.handleChange}
+                                                error={formik.touched.unit_id && Boolean(formik.errors.unit_id)}
+                                            >
+                                                {globalUnits.map((unit) => <MenuItem key={unit.id} value={unit.id}>{unit.name}</MenuItem>)}
+                                            </Select>
+                                            <FormHelperText>{formik.touched.unit_id && formik.errors.unit_id}</FormHelperText>
+                                        </FormControl>
 
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TextField
-                                variant={'standard'}
-                                name={'amount'}
-                                type="number"
-                                label={'Ilość'}
-                                value={formik.values.amount}
-                                onChange={formik.handleChange}
-                                fullWidth
-                                error={formik.touched.amount && Boolean(formik.errors.amount)}
-                                helperText={formik.touched.amount && formik.errors.amount}
-                            />
-                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            variant={'standard'}
+                                            name={'amount'}
+                                            type="number"
+                                            label={'Ilość'}
+                                            value={formik.values.amount}
+                                            onChange={formik.handleChange}
+                                            fullWidth
+                                            error={formik.touched.amount && Boolean(formik.errors.amount)}
+                                            helperText={formik.touched.amount && formik.errors.amount}
+                                        />
+                                    </Grid>
+                                </>
+                            )
+                        }
                     </Grid>
 
 
