@@ -1,4 +1,4 @@
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Slide, TextField} from "@mui/material";
 import {forwardRef, useEffect, useRef} from "react";
 import {useFormik} from "formik";
 import ShoppingListEntrySchema from "@/Schemas/ShoppingListEntrySchema";
@@ -98,38 +98,49 @@ const ShoppingListEntryCEDialog = (
             </DialogTitle>
             <form onSubmit={formik.handleSubmit}>
                 <DialogContent>
-                    <TextField
-                        inputRef={mainInput}
-                        variant={'standard'}
-                        name={'product_name'}
-                        label={'Nazwa wpisu'}
-                        value={formik.values.product_name}
-                        onChange={formik.handleChange}
-                        fullWidth
-                        error={formik.touched.product_name && Boolean(formik.errors.product_name)}
-                        helperText={formik.touched.product_name && formik.errors.product_name}
-                    />
-                    <TextField
-                        variant={'standard'}
-                        name={'unit_name'}
-                        label={'Jednostka'}
-                        value={formik.values.unit_name}
-                        onChange={formik.handleChange}
-                        fullWidth
-                        error={formik.touched.unit_name && Boolean(formik.errors.unit_name)}
-                        helperText={formik.touched.unit_name && formik.errors.unit_name}
-                    />
-                    <TextField
-                        variant={'standard'}
-                        name={'amount'}
-                        type="number"
-                        label={'Ilość'}
-                        value={formik.values.amount}
-                        onChange={formik.handleChange}
-                        fullWidth
-                        error={formik.touched.amount && Boolean(formik.errors.amount)}
-                        helperText={formik.touched.amount && formik.errors.amount}
-                    />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} >
+                            <TextField
+                                inputRef={mainInput}
+                                variant={'standard'}
+                                name={'product_name'}
+                                label={'Nazwa wpisu'}
+                                value={formik.values.product_name}
+                                onChange={formik.handleChange}
+                                fullWidth
+                                error={formik.touched.product_name && Boolean(formik.errors.product_name)}
+                                helperText={formik.touched.product_name && formik.errors.product_name}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                variant={'standard'}
+                                name={'unit_name'}
+                                label={'Jednostka'}
+                                value={formik.values.unit_name}
+                                onChange={formik.handleChange}
+                                fullWidth
+                                error={formik.touched.unit_name && Boolean(formik.errors.unit_name)}
+                                helperText={formik.touched.unit_name && formik.errors.unit_name}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                variant={'standard'}
+                                name={'amount'}
+                                type="number"
+                                label={'Ilość'}
+                                value={formik.values.amount}
+                                onChange={formik.handleChange}
+                                fullWidth
+                                error={formik.touched.amount && Boolean(formik.errors.amount)}
+                                helperText={formik.touched.amount && formik.errors.amount}
+                            />
+                        </Grid>
+                    </Grid>
+
+
+
 
                 </DialogContent>
                 <DialogActions>
