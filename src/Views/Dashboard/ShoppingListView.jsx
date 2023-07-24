@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import {request, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
+import {requestShoppingLists, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
 import store from "@/Store/store";
-import {FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Tooltip} from "@mui/material";
+import {FormControl, Grid, IconButton, InputLabel, LinearProgress, MenuItem, Select, Tooltip} from "@mui/material";
 import SpeedDial from "@/Components/SpeedDial/SpeedDial";
 import {Add, Delete, EditNote, Remove} from "@mui/icons-material";
 import FAB from "@/Components/FAB/FAB";
@@ -46,14 +46,15 @@ const ShoppingListView = () => {
 
     let {
         shoppingLists,
-        selectedShoppingListID
+        selectedShoppingListID,
+        isLoading,
     } = useSelector(state => state.shoppingListReducer);
     selectedShoppingListID = selectedShoppingListID || 0;
 
     const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
 
     useEffect(() => {
-        store.dispatch(request());
+        store.dispatch(requestShoppingLists());
     },[]);
 
     const handleCloseShoppingListCUDialog = () => {
@@ -99,7 +100,7 @@ const ShoppingListView = () => {
             });
 
             store.dispatch(selectShoppingList(0));
-            store.dispatch(request());
+            store.dispatch(requestShoppingLists());
 
         }
     }
@@ -175,6 +176,7 @@ const ShoppingListView = () => {
                     </div>
                 </Grid>
             </Grid>
+            {isLoading ? <LinearProgress /> : <div style={{height: '4px'}} ></div>}
             <EntriesContainer>
                 {
                     selectedShoppingList?.entries?.map((entry) => (

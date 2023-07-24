@@ -5,7 +5,7 @@ const fetchGlobalUnitSuccessAction = (state, action) => {
     state.isLoading = false;
     state.error = false;
     state.errorMessage = '';
-    state.shoppingLists = payload;
+    state.globalUnits = payload;
 }
 
 export default fetchGlobalUnitSuccessAction;

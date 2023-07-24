@@ -1,12 +1,24 @@
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Slide, TextField} from "@mui/material";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl, FormHelperText,
+    Grid, InputLabel, MenuItem, Select,
+    Slide,
+    TextField
+} from "@mui/material";
 import {forwardRef, useEffect, useRef} from "react";
 import {useFormik} from "formik";
 import ShoppingListEntrySchema from "@/Schemas/ShoppingListEntrySchema";
 import {useSelector} from "react-redux";
 import toast from "react-hot-toast";
 import store from "@/Store/store";
-import {request} from "@/Store/Reducers/ShoppingListReducer";
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
+import {requestGlobalUnits} from "@/Store/Reducers/GlobalUnitReducer";
+import {requestShoppingLists} from "@/Store/Reducers/ShoppingListReducer";
+
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -26,12 +38,21 @@ const ShoppingListEntryCEDialog = (
         selectedShoppingListID
     } = useSelector(state => state.shoppingListReducer);
     const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
+    const {
+        globalUnits
+    } = useSelector(state => state.globalUnitReducer);
+
+    const defaultUnit = globalUnits.find((unit) => unit.default);
+
+
+
 
     const mainInput = useRef(null);
     const formik = useFormik({
         initialValues: {
+            type: 'raw_product',
             product_name: '',
-            unit_name: '',
+            unit_id: '',
             amount: 0,
         },
         validationSchema: ShoppingListEntrySchema,
@@ -48,16 +69,21 @@ const ShoppingListEntryCEDialog = (
                     error: 'Nie udało się zaktualizować wpisu'
                 });
             }else{
-                const result = await toast.promise(ShoppingListEntriesAPI.create(selectedShoppingListID, values),{
+                await toast.promise(ShoppingListEntriesAPI.create(selectedShoppingListID, values),{
                     loading: 'Tworzenie wpisu',
                     success:  'Wpis został utworzony',
                     error: 'Nie udało się utworzyć wpisu'
                 });
             }
-            store.dispatch(request());
+            store.dispatch(requestShoppingLists());
             handleClose();
         }
     });
+
+    useEffect(() => {
+        store.dispatch(requestGlobalUnits());
+    }, []);
+
 
     const handleClose = () =>{
         onClose();
@@ -67,6 +93,8 @@ const ShoppingListEntryCEDialog = (
         if(open){
             mainInput?.current?.focus();
             formik.resetForm();
+            formik.setFieldValue('unit_id', defaultUnit?.id || '');
+
         }
 
         if(editMode){
@@ -78,8 +106,9 @@ const ShoppingListEntryCEDialog = (
             }
 
             formik.setValues({
+                type: entryForEdit?.type,
                 product_name: entryForEdit?.product_name,
-                unit_name: entryForEdit?.unit_name,
+                unit_id: entryForEdit?.unit_id,
                 amount: entryForEdit?.amount,
             });
         }
@@ -113,16 +142,23 @@ const ShoppingListEntryCEDialog = (
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <TextField
-                                variant={'standard'}
-                                name={'unit_name'}
-                                label={'Jednostka'}
-                                value={formik.values.unit_name}
-                                onChange={formik.handleChange}
-                                fullWidth
-                                error={formik.touched.unit_name && Boolean(formik.errors.unit_name)}
-                                helperText={formik.touched.unit_name && formik.errors.unit_name}
-                            />
+                            <FormControl fullWidth variant={'standard'}
+                                         error={formik.touched.unit_id && Boolean(formik.errors.unit_id)}
+                            >
+                                <InputLabel>Jednostka</InputLabel>
+                                <Select
+                                    value={formik.values.unit_id}
+                                    variant={'standard'}
+                                    name={'unit_id'}
+                                    label="Jednostka"
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.unit_id && Boolean(formik.errors.unit_id)}
+                                >
+                                    {globalUnits.map((unit) => <MenuItem key={unit.id} value={unit.id}>{unit.name}</MenuItem>)}
+                                </Select>
+                                <FormHelperText>{formik.touched.unit_id && formik.errors.unit_id}</FormHelperText>
+                            </FormControl>
+
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <TextField

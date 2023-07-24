@@ -1,6 +1,7 @@
 import requestGlobalUnitsAction from "@/Store/Actions/GlobalUnitReducer/requestGlobalUnitsAction";
 import {createSlice} from "@reduxjs/toolkit";
 import fetchGlobalUnitSuccessAction from "@/Store/Actions/GlobalUnitReducer/fetchGlobalUnitSuccessAction";
+import fetchGlobalUnitFailureAction from "@/Store/Actions/GlobalUnitReducer/fetchGlobalUnitFailureAction";
 
 const initialState = {
     globalUnits: [],
@@ -13,7 +14,7 @@ const globalUnitSlice = createSlice({
     name: 'globalUnit',
     initialState,
     reducers:{
-        request: requestGlobalUnitsAction,
+        requestGlobalUnits: requestGlobalUnitsAction,
         success: fetchGlobalUnitSuccessAction,
         failure: fetchGlobalUnitFailureAction
     }
@@ -21,4 +22,4 @@ const globalUnitSlice = createSlice({
 
 
 export default globalUnitSlice.reducer;
-export const {request, success, failure} = globalUnitSlice.actions;
+export const {requestGlobalUnits, success, failure} = globalUnitSlice.actions;
