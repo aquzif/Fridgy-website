@@ -22,3 +22,4 @@ const ShoppingListEntrySchema = Yup.object().shape({
 });
 
 export default ShoppingListEntrySchema;
+

@@ -1,3 +1,4 @@
+
 import {
     Button,
     Dialog,
@@ -9,15 +10,18 @@ import {
     Slide,
     TextField
 } from "@mui/material";
+
 import {forwardRef, useEffect, useRef} from "react";
 import {useFormik} from "formik";
 import ShoppingListEntrySchema from "@/Schemas/ShoppingListEntrySchema";
 import {useSelector} from "react-redux";
 import toast from "react-hot-toast";
 import store from "@/Store/store";
+
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
 import {requestGlobalUnits} from "@/Store/Reducers/GlobalUnitReducer";
 import {requestShoppingLists} from "@/Store/Reducers/ShoppingListReducer";
+
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -38,18 +42,22 @@ const ShoppingListEntryCEDialog = (
         selectedShoppingListID
     } = useSelector(state => state.shoppingListReducer);
     const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
+
     const {
         globalUnits
     } = useSelector(state => state.globalUnitReducer);
 
     const defaultUnit = globalUnits.find((unit) => unit.default);
 
+
     const mainInput = useRef(null);
     const formik = useFormik({
         initialValues: {
+
             type: 'raw_product',
             product_name: '',
             unit_id: '',
+
             amount: 0,
         },
         validationSchema: ShoppingListEntrySchema,
@@ -66,20 +74,26 @@ const ShoppingListEntryCEDialog = (
                     error: 'Nie udało się zaktualizować wpisu'
                 });
             }else{
+
                 await toast.promise(ShoppingListEntriesAPI.create(selectedShoppingListID, values),{
+
                     loading: 'Tworzenie wpisu',
                     success:  'Wpis został utworzony',
                     error: 'Nie udało się utworzyć wpisu'
                 });
             }
+
             store.dispatch(requestShoppingLists());
+
             handleClose();
         }
     });
 
+
     useEffect(() => {
         store.dispatch(requestGlobalUnits());
     }, []);
+
 
 
     const handleClose = () =>{
@@ -90,6 +104,7 @@ const ShoppingListEntryCEDialog = (
         if(open){
             mainInput?.current?.focus();
             formik.resetForm();
+
             formik.setFieldValue('unit_id', defaultUnit?.id || '');
 
             if(editMode){
@@ -111,13 +126,16 @@ const ShoppingListEntryCEDialog = (
     }, [open,editMode]);
 
 
+
     return (
         <Dialog
             open={open}
             TransitionComponent={Transition}
             keepMounted
+
             fullWidth
             maxWidth={'sm'}
+
             onClose={handleClose}
         >
             <DialogTitle>
@@ -125,6 +143,7 @@ const ShoppingListEntryCEDialog = (
             </DialogTitle>
             <form onSubmit={formik.handleSubmit}>
                 <DialogContent>
+
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={4} >
                             <FormControl fullWidth variant={'standard'}
@@ -203,6 +222,7 @@ const ShoppingListEntryCEDialog = (
 
 
 
+
                 </DialogContent>
                 <DialogActions>
                     <Button color={'warning'} onClick={handleClose}>Anuluj</Button>
@@ -214,4 +234,6 @@ const ShoppingListEntryCEDialog = (
 
 }
 
+
 export default ShoppingListEntryCEDialog;
+

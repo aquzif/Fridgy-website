@@ -15,6 +15,7 @@ import StringUtils from "@/Utils/StringUtils";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import toast from "react-hot-toast";
 import ShoppingListReducer, {requestShoppingLists, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
+
 import store from "@/Store/store";
 import {useSelector} from "react-redux";
 
@@ -69,6 +70,7 @@ const ShoppingListCEDialog = (
 
             }
             store.dispatch(requestShoppingLists());
+
             handleClose();
         }
     });
@@ -77,6 +79,7 @@ const ShoppingListCEDialog = (
             mainInput?.current?.focus();
             formik.resetForm();
 
+
             if(editMode){
                 formik.setValues({
                     name: selectedShoppingList?.name
@@ -84,7 +87,6 @@ const ShoppingListCEDialog = (
             }
 
         }
-
 
 
     }, [open,editMode]);
@@ -123,3 +125,4 @@ const ShoppingListCEDialog = (
 }
 
 export default ShoppingListCEDialog;
+

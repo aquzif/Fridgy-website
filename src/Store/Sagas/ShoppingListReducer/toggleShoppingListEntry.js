@@ -11,6 +11,7 @@ function* toggleShoppingListEntry ({payload}){
     const shoppingListEntry = store.getState().shoppingListReducer?.shoppingLists?.
         find(sl => sl.id === shoppingListID)?.entries?.find(sle => sle.id === shoppingListEntryID);
 
+
     if(!shoppingListEntry) return;
 
     const result = yield ShoppingListEntriesAPI.update(shoppingListID, shoppingListEntryID, {
@@ -20,3 +21,4 @@ function* toggleShoppingListEntry ({payload}){
 }
 
 export default toggleShoppingListEntry;
+

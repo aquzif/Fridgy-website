@@ -8,7 +8,6 @@ import fetchGlobalUnit from "@/Store/Sagas/GlobalUnitReducer/fetchGlobalUnit";
 
 
 
-
 function* saga(){
     yield takeLatest(requestShoppingLists().type,fetchShoppingList);
     yield takeLatest(toggleEntry().type,toggleShoppingListEntry);

@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {requestShoppingLists, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
 import store from "@/Store/store";
 import {FormControl, Grid, IconButton, InputLabel, LinearProgress, MenuItem, Select, Tooltip} from "@mui/material";
+
 import SpeedDial from "@/Components/SpeedDial/SpeedDial";
 import {Add, Delete, EditNote, Remove} from "@mui/icons-material";
 import FAB from "@/Components/FAB/FAB";
@@ -13,7 +14,9 @@ import toast from "react-hot-toast";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import ShoppingListEntryCEDialog from "@/Dialogs/ShoppingListEntryCEDialog";
 import ShoppingListEntry from "@/Components/ShoppingListEntry/ShoppingListEntry";
+
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
+
 
 const Container = styled.div`
   max-width: 800px;
@@ -91,6 +94,7 @@ const ShoppingListView = () => {
         setShoppingListEntryCUDialogOpen(true);
     }
 
+
     const handleOpenShoppingListEntryDeleteDialog = async (entryID) => {
         const result = await ShoppingListEntriesAPI.delete(selectedShoppingListID,entryID);
 
@@ -108,6 +112,7 @@ const ShoppingListView = () => {
 
             store.dispatch(selectShoppingList(0));
             store.dispatch(requestShoppingLists());
+
 
         }
     }
@@ -184,6 +189,7 @@ const ShoppingListView = () => {
                 </Grid>
             </Grid>
             {isLoading ? <LinearProgress /> : <div style={{height: '4px'}} ></div>}
+
             <EntriesContainer>
                 {
                     selectedShoppingList?.entries?.map((entry) => (
@@ -191,6 +197,7 @@ const ShoppingListView = () => {
                             shoppingList={selectedShoppingList}
                             onEdit={handleOpenShoppingListEntryEditDialog}
                             onDelete={handleOpenShoppingListEntryDeleteDialog}
+
                             key={entry.id}
                             data={entry} />
                     ))

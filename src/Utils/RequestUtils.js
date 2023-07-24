@@ -31,6 +31,7 @@ export default class RequestUtils{
 
     static async apiPost(url, data = {}, headers = {}){
         const result = await this.request(url, 'POST', StringUtils.trimObjectValues(data) , {
+
             ...headers,
             'Authorization': 'Bearer ' + UserUtils.getUserToken(),
         });

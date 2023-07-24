@@ -1,10 +1,12 @@
 import styled from 'styled-components';
+
 import {Checkbox, CircularProgress, IconButton} from "@mui/material";
 import {toggleEntry} from "@/Store/Reducers/ShoppingListReducer";
 import store from "@/Store/store";
 import {Delete, Edit, EditNote} from "@mui/icons-material";
 import {useState} from "react";
 import toast from "react-hot-toast";
+
 
 
 const Container = styled.div`
@@ -38,6 +40,7 @@ const Subtitle = styled.h4`
 `;
 
 
+
 const EntryRawProductContent = ({data, checked}) =>
     <>
         <Title checked={checked} >{data.product_name}</Title>
@@ -49,10 +52,12 @@ const EntryRawContent = ({data, checked}) =>
         <Title style={{marginTop: '8px'}} checked={checked} >{data.product_name}</Title>
     </>
 
+
 const ShoppingListEntry = (
     {
         data,
         shoppingList,
+
         onEdit = (entryID) => {},
         onDelete= (entryID) => {}
     }
@@ -61,7 +66,9 @@ const ShoppingListEntry = (
     const {checked} = data;
 
     const [hover,setHover] = useState(false);
+
     const [isDeleting,setIsDeleting] = useState(false);
+
 
     const onToggleCheck = () => {
         store.dispatch(toggleEntry({
@@ -86,17 +93,20 @@ const ShoppingListEntry = (
         };
     }
 
+
     return <Container onMouseEnter={() => setHover(true)}
                         onMouseLeave={() => setHover(false)}
     >
         <Checkbox checked={data.checked}
                   onChange={onToggleCheck}
+
                   style={{margin: '4px'}} />
         <div style={{margin: '5px',width: 'calc(100% - 100px)'}}
              onClick={onToggleCheck}
         >
             {data.type === 'raw_product' && <EntryRawProductContent data={data} checked={checked} />}
             {data.type === 'raw' && <EntryRawContent data={data} checked={checked} />}
+
 
         </div>
         <div style={{padding: '5px'}} >
@@ -114,9 +124,11 @@ const ShoppingListEntry = (
 
                     </IconButton>
                 </div>
+
             }
         </div>
     </Container>
 }
 
 export default ShoppingListEntry;
+
