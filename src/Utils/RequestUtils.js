@@ -14,10 +14,15 @@ export default class RequestUtils{
     }
 
     static async apiGet(url, data = {}, headers = {}){
-        return await this.request(url, 'GET', data , {
+        const result =  await this.request(url, 'GET', data , {
             ...headers,
             'Authorization': 'Bearer ' + UserUtils.getUserToken(),
         });
+
+        if(result.status > 400)
+            throw new Error(result.data.message);
+
+        return result;
     }
 
     static async post(url, data = {}, headers = {}){
@@ -25,10 +30,16 @@ export default class RequestUtils{
     }
 
     static async apiPost(url, data = {}, headers = {}){
-        return await this.request(url, 'POST', StringUtils.trimObjectValues(data) , {
+        const result = await this.request(url, 'POST', StringUtils.trimObjectValues(data) , {
+
             ...headers,
             'Authorization': 'Bearer ' + UserUtils.getUserToken(),
         });
+
+        if(result.status > 400)
+            throw new Error(result.data.message);
+
+        return result;
     }
 
     static async put(url, data = {}, headers = {}){
@@ -36,10 +47,15 @@ export default class RequestUtils{
     }
 
     static async apiPut(url, data = {}, headers = {}){
-        return await this.request(url, 'PUT', data, {
+        const result = await this.request(url, 'PUT', data, {
             ...headers,
             'Authorization': 'Bearer ' + UserUtils.getUserToken(),
         });
+
+        if(result.status > 400)
+            throw new Error(result.data.message);
+
+        return result;
     }
 
     static async delete(url, data = {}, headers = {}){
@@ -47,10 +63,15 @@ export default class RequestUtils{
     }
 
     static async apiDelete(url, data = {}, headers = {}){
-        return await this.request(url, 'DELETE', data, {
+        const result = await this.request(url, 'DELETE', data, {
             ...headers,
             'Authorization': 'Bearer ' + UserUtils.getUserToken(),
         });
+
+        if(result.status > 400)
+            throw new Error(result.data.message);
+
+        return result;
     }
 
     static async request(url, method, data, headers){

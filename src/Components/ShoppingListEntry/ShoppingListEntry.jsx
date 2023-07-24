@@ -1,9 +1,12 @@
 import styled from 'styled-components';
-import {Checkbox, IconButton} from "@mui/material";
+
+import {Checkbox, CircularProgress, IconButton} from "@mui/material";
 import {toggleEntry} from "@/Store/Reducers/ShoppingListReducer";
 import store from "@/Store/store";
-import {Edit, EditNote} from "@mui/icons-material";
+import {Delete, Edit, EditNote} from "@mui/icons-material";
 import {useState} from "react";
+import toast from "react-hot-toast";
+
 
 
 const Container = styled.div`
@@ -37,17 +40,35 @@ const Subtitle = styled.h4`
 `;
 
 
+
+const EntryRawProductContent = ({data, checked}) =>
+    <>
+        <Title checked={checked} >{data.product_name}</Title>
+        <Subtitle checked={checked} >{data.amount} x {data.unit_name}</Subtitle>
+    </>
+
+const EntryRawContent = ({data, checked}) =>
+    <>
+        <Title style={{marginTop: '8px'}} checked={checked} >{data.product_name}</Title>
+    </>
+
+
 const ShoppingListEntry = (
     {
         data,
         shoppingList,
-        onEdit = (entryID) => {}
+
+        onEdit = (entryID) => {},
+        onDelete= (entryID) => {}
     }
 ) => {
 
     const {checked} = data;
 
     const [hover,setHover] = useState(false);
+
+    const [isDeleting,setIsDeleting] = useState(false);
+
 
     const onToggleCheck = () => {
         store.dispatch(toggleEntry({
@@ -62,6 +83,16 @@ const ShoppingListEntry = (
         onEdit(data.id);
     }
 
+    const handleOnDelete = async () => {
+        setIsDeleting(true);
+        try{
+            await onDelete(data.id)
+        }catch (e){
+            setIsDeleting(false);
+            toast.error('Nie udało się usunąć wpisu');
+        };
+    }
+
 
     return <Container onMouseEnter={() => setHover(true)}
                         onMouseLeave={() => setHover(false)}
@@ -73,18 +104,31 @@ const ShoppingListEntry = (
         <div style={{margin: '5px',width: 'calc(100% - 100px)'}}
              onClick={onToggleCheck}
         >
-            <Title checked={checked} >{data.product_name}</Title>
-            <Subtitle checked={checked} >{data.amount} x {data.unit_name}</Subtitle>
+            {data.type === 'raw_product' && <EntryRawProductContent data={data} checked={checked} />}
+            {data.type === 'raw' && <EntryRawContent data={data} checked={checked} />}
+
 
         </div>
         <div style={{padding: '5px'}} >
             { hover &&
-                <IconButton onClick={handleOnEdit}  >
-                <Edit />
-            </IconButton>
+                <div style={{display: 'flex',flexDirection: 'row'}} >
+                    <IconButton onClick={handleOnEdit}  >
+                        <Edit />
+                    </IconButton>
+                    <IconButton onClick={handleOnDelete}  >
+                        {
+                            isDeleting ?
+                                <CircularProgress size={24} />
+                                : <Delete color={'error'} />
+                        }
+
+                    </IconButton>
+                </div>
+
             }
         </div>
     </Container>
 }
 
 export default ShoppingListEntry;
+

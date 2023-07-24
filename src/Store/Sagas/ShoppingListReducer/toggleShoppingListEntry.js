@@ -8,7 +8,9 @@ function* toggleShoppingListEntry ({payload}){
         newState
     } = payload;
 
-    const shoppingListEntry = store.getState().shoppingListReducer?.shoppingLists?.find(sl => sl.id === shoppingListID)?.entries?.find(sle => sle.id === shoppingListEntryID);
+    const shoppingListEntry = store.getState().shoppingListReducer?.shoppingLists?.
+        find(sl => sl.id === shoppingListID)?.entries?.find(sle => sle.id === shoppingListEntryID);
+
 
     if(!shoppingListEntry) return;
 
@@ -19,3 +21,4 @@ function* toggleShoppingListEntry ({payload}){
 }
 
 export default toggleShoppingListEntry;
+
