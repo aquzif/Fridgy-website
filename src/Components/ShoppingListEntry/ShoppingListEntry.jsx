@@ -6,6 +6,7 @@ import store from "@/Store/store";
 import {Delete, Edit, EditNote} from "@mui/icons-material";
 import {useState} from "react";
 import toast from "react-hot-toast";
+import {useMediaQuery} from "@/Hooks/useMediaQuery";
 
 
 
@@ -66,9 +67,9 @@ const ShoppingListEntry = (
     const {checked} = data;
 
     const [hover,setHover] = useState(false);
-
     const [isDeleting,setIsDeleting] = useState(false);
 
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     const onToggleCheck = () => {
         store.dispatch(toggleEntry({
@@ -99,7 +100,7 @@ const ShoppingListEntry = (
     >
         <Checkbox checked={data.checked}
                   onChange={onToggleCheck}
-
+                  sx={isMobile ? { '& .MuiSvgIcon-root': { fontSize: 28 } } : {}}
                   style={{margin: '4px'}} />
         <div style={{margin: '5px',width: 'calc(100% - 100px)'}}
              onClick={onToggleCheck}
