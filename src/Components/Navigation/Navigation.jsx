@@ -24,7 +24,7 @@ const Container = styled.div`
     background-color: #2B2B2B;
     width: 250px;
     height: 100vh;
-    transition: left 0.3s ease-in-out;
+    transition: left 0.2s ease-in;
     z-index: 1000; 
 
 
