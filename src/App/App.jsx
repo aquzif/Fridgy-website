@@ -9,6 +9,7 @@ import {useEffect} from "react";
 import {ThemeProvider} from "@mui/material";
 import theme from "@/Theme/theme";
 
+
 const App = () => {
 
     const { waitingWorker, showReload, reloadPage } = useServiceWorker();
@@ -20,6 +21,8 @@ const App = () => {
                 reloadPage();
         }
     }, [waitingWorker, showReload, reloadPage]);
+
+
 
     return (
         <>

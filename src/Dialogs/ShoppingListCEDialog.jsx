@@ -4,7 +4,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select,
     Slide,
     TextField
 } from "@mui/material";
@@ -49,6 +49,7 @@ const ShoppingListCEDialog = (
     const formik = useFormik({
         initialValues: {
             name: '',
+            type: 'default',
         },
         validationSchema: ShoppingListSchema,
         validateOnChange: true,
@@ -76,13 +77,16 @@ const ShoppingListCEDialog = (
     });
     useEffect(() => {
         if(open){
-            mainInput?.current?.focus();
+            setTimeout(() => {
+                mainInput?.current?.focus();
+            },2000);
             formik.resetForm();
-
+            console.log(selectedShoppingList);
 
             if(editMode){
                 formik.setValues({
-                    name: selectedShoppingList?.name
+                    name: selectedShoppingList?.name,
+                    type: selectedShoppingList?.type,
                 });
             }
 
@@ -95,7 +99,8 @@ const ShoppingListCEDialog = (
             <Dialog
                 open={open}
                 TransitionComponent={Transition}
-                keepMounted
+                fullWidth
+                maxWidth={'xs'}
                 onClose={handleClose}
             >
                 <DialogTitle>{
@@ -103,17 +108,40 @@ const ShoppingListCEDialog = (
                 }</DialogTitle>
                 <form onSubmit={formik.handleSubmit}>
                     <DialogContent>
-                        <TextField
-                            inputRef={mainInput}
-                            variant={'standard'}
-                            name={'name'}
-                            label={'Nazwa listy zakupów'}
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            fullWidth
-                            error={formik.touched.name && Boolean(formik.errors.name)}
-                            helperText={formik.touched.name && formik.errors.name}
-                        />
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    inputRef={mainInput}
+                                    variant={'standard'}
+                                    name={'name'}
+                                    label={'Nazwa listy zakupów'}
+                                    value={formik.values.name}
+                                    onChange={formik.handleChange}
+                                    fullWidth
+                                    error={formik.touched.name && Boolean(formik.errors.name)}
+                                    helperText={formik.touched.name && formik.errors.name}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth variant={'standard'}
+                                             error={formik.touched.type && Boolean(formik.errors.type)}
+                                >
+                                    <InputLabel>Typ Wpisu</InputLabel>
+                                    <Select
+                                        value={formik.values.type}
+                                        variant={'standard'}
+                                        name={'type'}
+                                        label="Jednostka"
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.type && Boolean(formik.errors.type)}
+                                    >
+                                        <MenuItem key={'default'} value={'default'}>Domyślna</MenuItem>
+                                        <MenuItem key={'grouped'} value={'grouped'}>Zgrupowana</MenuItem>
+                                    </Select>
+                                    <FormHelperText>{formik.touched.type && formik.errors.type}</FormHelperText>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button color={'warning'} onClick={handleClose}>Anuluj</Button>
