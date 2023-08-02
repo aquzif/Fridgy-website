@@ -106,7 +106,9 @@ const ShoppingListEntryCEDialog = (
 
     useEffect(() => {
         if(open){
-            mainInput?.current?.focus();
+            setTimeout(() => {
+                mainInput?.current?.focus();
+            },2000);
             formik.resetForm();
 
             formik.setFieldValue('unit_id', defaultUnit?.id || '');
