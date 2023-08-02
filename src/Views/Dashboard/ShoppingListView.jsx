@@ -5,8 +5,8 @@ import {requestShoppingLists, selectShoppingList} from "@/Store/Reducers/Shoppin
 import store from "@/Store/store";
 import {FormControl, Grid, IconButton, InputLabel, LinearProgress, MenuItem, Select, Tooltip} from "@mui/material";
 
-import SpeedDial from "@/Components/SpeedDial/SpeedDial";
-import {Add, Delete, EditNote, Remove} from "@mui/icons-material";
+
+import {Add, Delete, EditNote, Refresh} from "@mui/icons-material";
 import FAB from "@/Components/FAB/FAB";
 import ShoppingListCEDialog from "@/Dialogs/ShoppingListCEDialog";
 import ConfirmDialog from "@/Dialogs/ConfirmDialog";
@@ -16,6 +16,8 @@ import ShoppingListEntryCEDialog from "@/Dialogs/ShoppingListEntryCEDialog";
 import ShoppingListEntry from "@/Components/ShoppingListEntry/ShoppingListEntry";
 
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
+import ArrayUtils from "@/Utils/ArrayUtils";
+import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
 
 
 const Container = styled.div`
@@ -56,9 +58,13 @@ const ShoppingListView = () => {
     selectedShoppingListID = selectedShoppingListID || 0;
 
     const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
+    const load = () => {
+        store.dispatch(requestShoppingLists());
+        store.dispatch(requestProductCategories());
+    }
 
     useEffect(() => {
-        store.dispatch(requestShoppingLists());
+        load();
     },[]);
 
     const handleCloseShoppingListCUDialog = () => {
@@ -104,7 +110,7 @@ const ShoppingListView = () => {
     const handleConfirmDialogClose = async (result) => {
         setDeleteDialogOpen(false);
         if(result){
-            const result = await toast.promise(ShoppingListsAPI.delete(selectedShoppingListID),{
+            await toast.promise(ShoppingListsAPI.delete(selectedShoppingListID),{
                 loading: 'Usuwanie listy zakupów...',
                 success: 'Lista zakupów została usunięta',
                 error: 'Nie udało się usunąć listy zakupów'
@@ -185,6 +191,11 @@ const ShoppingListView = () => {
                                 <EditNote />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title={'Odśwież'} arrow>
+                            <IconButton disabled={isLoading} onClick={load} >
+                                <Refresh />
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 </Grid>
             </Grid>
@@ -192,7 +203,7 @@ const ShoppingListView = () => {
 
             <EntriesContainer>
                 {
-                    selectedShoppingList?.entries?.map((entry) => (
+                    selectedShoppingList?.type === 'default' && selectedShoppingList?.entries?.map((entry) => (
                         <ShoppingListEntry
                             shoppingList={selectedShoppingList}
                             onEdit={handleOpenShoppingListEntryEditDialog}
@@ -202,6 +213,23 @@ const ShoppingListView = () => {
                             data={entry} />
                     ))
                 }
+                {
+                    selectedShoppingList?.type === 'grouped' && Object.entries(ArrayUtils.
+                        groupBy(selectedShoppingList?.entries,'category'))
+                        .map(([key,entries]) => (<>
+                            <h3>{Boolean(key) ? 'Bez kategorii' : key}</h3>
+                            {entries.map((entry) => (
+                                <ShoppingListEntry
+                                    shoppingList={selectedShoppingList}
+                                    onEdit={handleOpenShoppingListEntryEditDialog}
+                                    onDelete={handleOpenShoppingListEntryDeleteDialog}
+
+                                    key={entry.id}
+                                    data={entry} />
+                                ))
+                            }
+                        </>))
+                }
             </EntriesContainer>
             <FAB
                 onClick={handleOpenShoppingListEntryCreateDialog}
@@ -209,5 +237,6 @@ const ShoppingListView = () => {
         </Container>
     )
 }
+
 
 export default ShoppingListView;

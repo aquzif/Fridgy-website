@@ -47,17 +47,21 @@ const ShoppingListEntryCEDialog = (
         globalUnits
     } = useSelector(state => state.globalUnitReducer);
 
+    const {
+        productCategories
+    } = useSelector(state => state.productCategoryReducer);
+
     const defaultUnit = globalUnits.find((unit) => unit.default);
 
 
     const mainInput = useRef(null);
     const formik = useFormik({
         initialValues: {
-
+            shoppingListType: 'default',
+            category_id: 0,
             type: 'raw_product',
             product_name: '',
             unit_id: '',
-
             amount: 0,
         },
         validationSchema: ShoppingListEntrySchema,
@@ -106,6 +110,7 @@ const ShoppingListEntryCEDialog = (
             formik.resetForm();
 
             formik.setFieldValue('unit_id', defaultUnit?.id || '');
+            formik.setFieldValue('shoppingListType', selectedShoppingList?.type || 'default');
 
             if(editMode){
                 const entryForEdit = selectedShoppingList?.entries.find((entry) => entry.id === editEntryID);
@@ -116,10 +121,12 @@ const ShoppingListEntryCEDialog = (
                 }
 
                 formik.setValues({
+                    ...formik.values,
                     type: entryForEdit?.type,
                     product_name: entryForEdit?.product_name,
                     unit_id: entryForEdit?.unit_id,
                     amount: entryForEdit?.amount,
+                    category_id: entryForEdit?.category_id || 0,
                 });
             }
         }
@@ -214,6 +221,27 @@ const ShoppingListEntryCEDialog = (
                                             helperText={formik.touched.amount && formik.errors.amount}
                                         />
                                     </Grid>
+                                    {
+                                        selectedShoppingList.type !== 'default' && (<Grid item xs={12} md={6}>
+                                            <FormControl fullWidth variant={'standard'}
+                                                         error={formik.touched.category_id && Boolean(formik.errors.category_id)}
+                                            >
+                                                <InputLabel>Kategoria</InputLabel>
+                                                <Select
+                                                    value={formik.values.category_id}
+                                                    variant={'standard'}
+                                                    name={'category_id'}
+                                                    label="Kategoria"
+                                                    onChange={formik.handleChange}
+                                                    error={formik.touched.unit_id && Boolean(formik.errors.category_id)}
+                                                >
+                                                    <MenuItem key={0} value={0}>Bez Kategorii</MenuItem>
+                                                    {productCategories.map((unit) => <MenuItem key={unit.id} value={unit.id}>{unit.name}</MenuItem>)}
+                                                </Select>
+                                                <FormHelperText>{formik.touched.category_id && formik.errors.category_id}</FormHelperText>
+                                            </FormControl>
+                                        </Grid>)
+                                    }
                                 </>
                             )
                         }
