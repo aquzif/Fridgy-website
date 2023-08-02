@@ -150,7 +150,7 @@ const LoginView = () => {
         </Background>
     );
 
-    return (
+    /*return (
         <>
             <div className="bg-img">
                 <form onSubmit={formik.handleSubmit}>
@@ -176,7 +176,7 @@ const LoginView = () => {
                 </form>
             </div>
         </>
-    )
+    )*/
 
 }
 
