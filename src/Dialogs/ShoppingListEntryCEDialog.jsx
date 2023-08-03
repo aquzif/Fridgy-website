@@ -224,7 +224,7 @@ const ShoppingListEntryCEDialog = (
                                         />
                                     </Grid>
                                     {
-                                        selectedShoppingList.type !== 'default' && (<Grid item xs={12} md={6}>
+                                        selectedShoppingList?.type !== 'default' && (<Grid item xs={12} md={6}>
                                             <FormControl fullWidth variant={'standard'}
                                                          error={formik.touched.category_id && Boolean(formik.errors.category_id)}
                                             >
