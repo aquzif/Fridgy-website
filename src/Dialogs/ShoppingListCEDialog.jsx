@@ -77,9 +77,7 @@ const ShoppingListCEDialog = (
     });
     useEffect(() => {
         if(open){
-            setTimeout(() => {
-                mainInput?.current?.focus();
-            },2000);
+            mainInput?.current?.focus();
             formik.resetForm();
             console.log(selectedShoppingList);
 
