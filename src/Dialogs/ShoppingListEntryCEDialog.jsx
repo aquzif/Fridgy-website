@@ -108,7 +108,7 @@ const ShoppingListEntryCEDialog = (
         if(open){
             setTimeout(() => {
                 mainInput?.current?.focus();
-            },2000);
+            },500);
             formik.resetForm();
 
             formik.setFieldValue('unit_id', defaultUnit?.id || '');
