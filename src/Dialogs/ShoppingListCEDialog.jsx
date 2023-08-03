@@ -79,7 +79,7 @@ const ShoppingListCEDialog = (
         if(open){
             setTimeout(() => {
                 mainInput?.current?.focus();
-            },500);
+            },200);
             formik.resetForm();
             console.log(selectedShoppingList);
 
