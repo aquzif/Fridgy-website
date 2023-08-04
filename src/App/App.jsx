@@ -8,13 +8,11 @@ import {useServiceWorker} from "@/Hooks/useServiceWorker";
 import {useEffect} from "react";
 import {ThemeProvider} from "@mui/material";
 import theme from "@/Theme/theme";
-import useVisiblityChange from "@/Hooks/useVisiblityChange";
 
 
 const App = () => {
 
     const { waitingWorker, showReload, reloadPage } = useServiceWorker();
-    const visibleState = useVisiblityChange();
 
     useEffect(() => {
         if (showReload && waitingWorker) {
@@ -23,11 +21,6 @@ const App = () => {
                 reloadPage();
         }
     }, [waitingWorker, showReload, reloadPage]);
-
-    useEffect(() =>{
-        alert(visibleState);
-    },[visibleState])
-
 
     return (
         <>

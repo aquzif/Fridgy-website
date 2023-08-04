@@ -3,8 +3,9 @@ import {useEffect, useState} from "react";
 const useVisiblityChange = () => {
     const [isVisible, setIsVisible] = useState(true);
 
-    const onVisibilityChange = () => {
-        setIsVisible(!isVisible);
+    const onVisibilityChange = (e) => {
+        //console.log(e)
+        setIsVisible(v => !v);
     };
 
     useEffect(() => {
