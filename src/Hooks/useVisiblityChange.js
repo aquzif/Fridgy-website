@@ -1,3 +1,4 @@
+import {useEffect, useState} from "react";
 
 const useVisiblityChange = () => {
     const [isVisible, setIsVisible] = useState(true);
@@ -15,3 +16,5 @@ const useVisiblityChange = () => {
 
     return isVisible;
 }
+
+export default useVisiblityChange;

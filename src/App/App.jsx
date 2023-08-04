@@ -8,6 +8,7 @@ import {useServiceWorker} from "@/Hooks/useServiceWorker";
 import {useEffect} from "react";
 import {ThemeProvider} from "@mui/material";
 import theme from "@/Theme/theme";
+import useVisiblityChange from "@/Hooks/useVisiblityChange";
 
 
 const App = () => {
