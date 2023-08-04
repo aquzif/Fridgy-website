@@ -22,8 +22,6 @@ const App = () => {
         }
     }, [waitingWorker, showReload, reloadPage]);
 
-
-
     return (
         <>
             <ThemeProvider theme={theme}>

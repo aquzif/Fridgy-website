@@ -18,6 +18,7 @@ import ShoppingListEntry from "@/Components/ShoppingListEntry/ShoppingListEntry"
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
 import ArrayUtils from "@/Utils/ArrayUtils";
 import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
+import useVisiblityChange from "@/Hooks/useVisiblityChange";
 
 
 const Container = styled.div`
@@ -49,6 +50,7 @@ const ShoppingListView = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const [editEntryID,setEditEntryID] = useState(null);
+    const isVisible = useVisiblityChange();
 
     let {
         shoppingLists,
@@ -64,8 +66,8 @@ const ShoppingListView = () => {
     }
 
     useEffect(() => {
-        load();
-    },[]);
+        if(isVisible) load();
+    },[isVisible]);
 
     const handleCloseShoppingListCUDialog = () => {
         setShoppingListCUDialogOpen(false);
