@@ -15,3 +15,5 @@ const useVisiblityChange = () => {
 
     return isVisible;
 }
+
+export default useVisiblityChange;
