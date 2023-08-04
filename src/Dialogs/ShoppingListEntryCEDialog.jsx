@@ -7,7 +7,7 @@ import {
     DialogTitle,
     FormControl, FormHelperText,
     Grid, InputLabel, MenuItem, Select,
-    Slide,
+    Grow,
     TextField
 } from "@mui/material";
 
@@ -25,7 +25,7 @@ import {requestShoppingLists} from "@/Store/Reducers/ShoppingListReducer";
 
 
 const Transition = forwardRef(function Transition(props, ref) {
-    return <Slide direction="down" ref={ref} {...props} />;
+    return <Grow  /*direction="down"*/ ref={ref} {...props} />;
 });
 
 const ShoppingListEntryCEDialog = (
