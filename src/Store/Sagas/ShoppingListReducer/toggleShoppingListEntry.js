@@ -14,9 +14,7 @@ function* toggleShoppingListEntry ({payload}){
 
     if(!shoppingListEntry) return;
 
-    const result = yield ShoppingListEntriesAPI.update(shoppingListID, shoppingListEntryID, {
-        checked: newState
-    });
+    const result = yield ShoppingListEntriesAPI.check(shoppingListID, shoppingListEntryID, newState);
 
 }
 
