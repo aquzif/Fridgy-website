@@ -207,30 +207,30 @@ const ShoppingListView = () => {
                 {
                     selectedShoppingList?.type === 'default' && selectedShoppingList?.entries?.map((entry) => (
                         <ShoppingListEntry
+                            key={entry.id}
                             shoppingList={selectedShoppingList}
                             onEdit={handleOpenShoppingListEntryEditDialog}
                             onDelete={handleOpenShoppingListEntryDeleteDialog}
 
-                            key={entry.id}
                             data={entry} />
                     ))
                 }
                 {
                     selectedShoppingList?.type === 'grouped' && Object.entries(ArrayUtils.
                         groupBy(selectedShoppingList?.entries,'category'))
-                        .map(([key,entries]) => (<>
+                        .map(([key,entries]) => (<div key={key}>
                             <h3>{Boolean(key) ? 'Bez kategorii' : key}</h3>
                             {entries.map((entry) => (
                                 <ShoppingListEntry
+                                    key={entry.id}
                                     shoppingList={selectedShoppingList}
                                     onEdit={handleOpenShoppingListEntryEditDialog}
                                     onDelete={handleOpenShoppingListEntryDeleteDialog}
 
-                                    key={entry.id}
                                     data={entry} />
                                 ))
                             }
-                        </>))
+                        </div>))
                 }
             </EntriesContainer>
             <FAB
