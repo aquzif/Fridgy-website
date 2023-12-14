@@ -1,5 +1,6 @@
 import {ray} from "node-ray/web";
 import ArrayUtils from "@/Utils/ArrayUtils";
+import store from "@/Store/store";
 
 export default class ShoppingListUtils {
 
@@ -8,9 +9,6 @@ export default class ShoppingListUtils {
         let shoppingListToReturn = [];
 
         if(!shoppingList) return [];
-
-        //ray clear session
-        ray().clearScreen();
 
         let {type, entries} = shoppingList;
         if(type === 'default'){
@@ -30,14 +28,30 @@ export default class ShoppingListUtils {
             ];
         } else if(type === 'grouped'){
 
+            let categories = entries.map(entry =>
+                entry.product_category && {
+                id: entry.product_category.id,
+                name: entry.product_category.name
+                    }
+            );
+
+            categories = [...new Set(categories.filter(category => category))];
+
             Object.entries(ArrayUtils.
             groupBy(entries
-                .filter(entry => !entry.checked),'category'))
+                .filter(entry => !entry.checked),'category_id'))
                 .map(([key,entries]) => {
+                    let category = 'undefined'
+                    if(key != 'null') {
+                        console.log('KEY:',key);
+                        category = categories.find(category => category.id == parseInt(key)).name;
+                    }
+
+
                     shoppingListToReturn = [...shoppingListToReturn,
                         {
                             type: 'category',
-                            category: key
+                            category: category
                         },
                         ...entries.map(entry => {
                             return {
