@@ -210,7 +210,7 @@ const ShoppingListView = () => {
                         .map((entry) => {
                             ray(entry.type).blue();
                             if(entry.type === 'category')
-                                return <h3>{Boolean(entry.category) ? 'Bez kategorii' : entry.category}</h3>
+                                return <h3>{entry.category == 'undefined' ? 'Bez kategorii' : entry.category}</h3>
                             else
                                 return <ShoppingListEntry
                                     key={entry.id}

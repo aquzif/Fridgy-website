@@ -51,7 +51,7 @@ export default class ShoppingListUtils {
                 shoppingListToReturn = [...shoppingListToReturn,
                     {
                         type: 'category',
-                        category: 'checked'
+                        category: 'Zaznaczone'
                     },
                     ...entries.filter(entry => entry.checked).map(entry => {
                         return {
