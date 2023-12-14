@@ -18,6 +18,9 @@ import ShoppingListReducer, {requestShoppingLists, selectShoppingList} from "@/S
 
 import store from "@/Store/store";
 import {useSelector} from "react-redux";
+import AsyncAutocompleter from "@/Components/AsyncAutocomplete/AsyncAutocomplete";
+import {ray} from "node-ray/web";
+import ProductAPI from "@/API/ProductsAPI";
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -92,6 +95,8 @@ const ShoppingListCEDialog = (
 
 
     }, [open,editMode]);
+
+
 
     return (
             <Dialog
