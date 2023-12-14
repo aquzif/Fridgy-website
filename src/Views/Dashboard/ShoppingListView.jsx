@@ -133,6 +133,8 @@ const ShoppingListView = () => {
 
     }
 
+    console.log(selectedShoppingList);
+
     return (
         <Container>
             <ConfirmDialog

@@ -21,6 +21,10 @@ import store from "@/Store/store";
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
 import {requestGlobalUnits} from "@/Store/Reducers/GlobalUnitReducer";
 import {requestShoppingLists} from "@/Store/Reducers/ShoppingListReducer";
+import ProductAPI from "@/API/ProductsAPI";
+import {ray} from "node-ray/web";
+import AsyncAutocompleter from "@/Components/AsyncAutocomplete/AsyncAutocomplete";
+import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
 
 
 
@@ -96,6 +100,7 @@ const ShoppingListEntryCEDialog = (
 
     useEffect(() => {
         store.dispatch(requestGlobalUnits());
+        store.dispatch(requestProductCategories());
     }, []);
 
 
@@ -133,7 +138,21 @@ const ShoppingListEntryCEDialog = (
         }
     }, [open,editMode]);
 
+    const onProductSearch = async (searchValue) => {
+        if(!searchValue) return [];
 
+        const result =  await ProductAPI.search(searchValue);
+        ray(result).purple();
+        return result?.data || [];
+    }
+
+    const onProductSelect = (selectedValue) => {
+        formik.setFieldValue('product_name', selectedValue?.name || '');
+
+        if(selectedValue?.product_category){
+            formik.setFieldValue('category_id', selectedValue.product_category.id);
+        }
+    }
 
     return (
         <Dialog
@@ -175,16 +194,12 @@ const ShoppingListEntryCEDialog = (
                         </Grid>
                         <Grid item xs={12} md={8} />
                         <Grid item xs={12} >
-                            <TextField
-                                inputRef={mainInput}
-                                variant={'standard'}
-                                name={'product_name'}
-                                label={'Nazwa wpisu'}
-                                value={formik.values.product_name}
-                                onChange={formik.handleChange}
-                                fullWidth
-                                error={formik.touched.product_name && Boolean(formik.errors.product_name)}
-                                helperText={formik.touched.product_name && formik.errors.product_name}
+                            <AsyncAutocompleter
+                                label={'Wyszukaj produkt'}
+                                onSearch={onProductSearch}
+                                allowCustomValues={true}
+                                onSelect={onProductSelect}
+                                error={formik.touched?.product_name && formik.errors?.product_name || ''}
                             />
                         </Grid>
                         {
