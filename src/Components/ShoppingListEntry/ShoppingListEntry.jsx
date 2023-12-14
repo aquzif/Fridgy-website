@@ -12,9 +12,9 @@ import {useMediaQuery} from "@/Hooks/useMediaQuery";
 
 const Container = styled.div`
   width: 100%;
-  height: 50px;
+  min-height: 50px;
   //border: 1px dashed black;
-  //margin: 10px 0;
+  //margin: 10px 0; 
   display: flex;
   flex-direction: row;
   cursor: pointer;

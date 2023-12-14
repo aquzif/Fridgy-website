@@ -19,6 +19,8 @@ import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
 import ArrayUtils from "@/Utils/ArrayUtils";
 import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
 import useVisiblityChange from "@/Hooks/useVisiblityChange";
+import ShoppingListUtils from "@/Utils/ShoppingListUtils";
+import {ray} from "node-ray/web";
 
 
 const Container = styled.div`
@@ -131,7 +133,6 @@ const ShoppingListView = () => {
 
     }
 
-
     return (
         <Container>
             <ConfirmDialog
@@ -205,6 +206,22 @@ const ShoppingListView = () => {
 
             <EntriesContainer>
                 {
+                    ShoppingListUtils.sortAndPrepareShoppingList(selectedShoppingList)
+                        .map((entry) => {
+                            ray(entry.type).blue();
+                            if(entry.type === 'category')
+                                return <h3>{Boolean(entry.category) ? 'Bez kategorii' : entry.category}</h3>
+                            else
+                                return <ShoppingListEntry
+                                    key={entry.id}
+                                    shoppingList={selectedShoppingList}
+                                    onEdit={handleOpenShoppingListEntryEditDialog}
+                                    onDelete={handleOpenShoppingListEntryDeleteDialog}
+
+                                    data={entry} />
+                        })
+                }
+                {/*{
                     selectedShoppingList?.type === 'default' && selectedShoppingList?.entries?.map((entry) => (
                         <ShoppingListEntry
                             key={entry.id}
@@ -231,7 +248,7 @@ const ShoppingListView = () => {
                                 ))
                             }
                         </div>))
-                }
+                }*/}
             </EntriesContainer>
             <FAB
                 onClick={handleOpenShoppingListEntryCreateDialog}

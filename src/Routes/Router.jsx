@@ -8,6 +8,8 @@ import AuthAPI from "@/API/AuthAPI";
 import ShoppingListView from "@/Views/Dashboard/ShoppingListView";
 import RecipesView from "@/Views/Dashboard/RecipesView";
 import ProductsView from "@/Views/Dashboard/ProductsView";
+import store from "@/Store/store";
+import {expire} from "@/Store/Reducers/AuthReducer";
 
 const Router = () => {
 
@@ -15,9 +17,14 @@ const Router = () => {
     const [loggedIn,setLoggedIn] = useState(authReducer.token !== null && authReducer.token !== undefined && authReducer.token !== '');
 
     useEffect(() => {
-        setLoggedIn(authReducer.token !== null && authReducer.token !== undefined && authReducer.token !== '');
+        let probablyLogged = authReducer.token !== null && authReducer.token !== undefined && authReducer.token !== '';
+        setLoggedIn(probablyLogged);
 
-        const result = AuthAPI.getUser();
+        if(probablyLogged)
+            AuthAPI.getUser()
+                .catch(() => {
+                    store.dispatch(expire());
+                });
 
     }, [authReducer.token]);
 
