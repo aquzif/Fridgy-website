@@ -74,7 +74,7 @@ const ProductCard = (
         <CardContent
             sx={{ flexGrow: 1 }}
         >
-            <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} variant={'h5'} gutterBottom>
+            <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} variant={'h6'} gutterBottom>
                 {name}
             </Typography>
             <Typography sx={{ fontSize: 14}} color="text.secondary" gutterBottom>
