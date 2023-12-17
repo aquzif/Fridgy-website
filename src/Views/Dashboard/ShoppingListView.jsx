@@ -21,6 +21,7 @@ import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer"
 import useVisiblityChange from "@/Hooks/useVisiblityChange";
 import ShoppingListUtils from "@/Utils/ShoppingListUtils";
 import {ray} from "node-ray/web";
+import TooltipIconButton from "@/Components/TooltipIconButton/TooltipIconButton";
 
 
 const Container = styled.div`
@@ -179,28 +180,29 @@ const ShoppingListView = () => {
                         display: 'flex',
                         justifyContent: 'flex-end',
                     }} >
-                        <Tooltip title={'Utwórz nową listę'} arrow>
-                            <IconButton onClick={handleOpenShoppingListCreateDialog} >
-                                <Add />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title={'Usuń listę'} arrow >
-                            <IconButton disabled={shoppingLists.length === 0}
-                                onClick={handleShoppingListDeleteButton}
-                            >
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title={'Edytuj listę'} arrow>
-                            <IconButton disabled={shoppingLists.length === 0} onClick={handleOpenShoppingListEditDialog} >
-                                <EditNote />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title={'Odśwież'} arrow>
-                            <IconButton disabled={isLoading} onClick={load} >
-                                <Refresh />
-                            </IconButton>
-                        </Tooltip>
+                        <TooltipIconButton
+                            title={'Utwórz nową listę'}
+                            onClick={handleOpenShoppingListCreateDialog}
+                            icon={<Add />}
+                        />
+                        <TooltipIconButton
+                            title={'Edytuj listę'}
+                            disabled={shoppingLists.length === 0}
+                            onClick={handleOpenShoppingListEditDialog}
+                            icon={<EditNote />}
+                        />
+                        <TooltipIconButton
+                            title={'Usuń listę'}
+                            disabled={shoppingLists.length === 0}
+                            onClick={handleShoppingListDeleteButton}
+                            icon={<Delete />}
+                        />
+                       <TooltipIconButton
+                           title={'Odśwież'}
+                           disabled={isLoading}
+                           onClick={load}
+                           icon={<Refresh />}
+                       />
                     </div>
                 </Grid>
             </Grid>
@@ -223,34 +225,6 @@ const ShoppingListView = () => {
                                     data={entry} />
                         })
                 }
-                {/*{
-                    selectedShoppingList?.type === 'default' && selectedShoppingList?.entries?.map((entry) => (
-                        <ShoppingListEntry
-                            key={entry.id}
-                            shoppingList={selectedShoppingList}
-                            onEdit={handleOpenShoppingListEntryEditDialog}
-                            onDelete={handleOpenShoppingListEntryDeleteDialog}
-
-                            data={entry} />
-                    ))
-                }
-                {
-                    selectedShoppingList?.type === 'grouped' && Object.entries(ArrayUtils.
-                        groupBy(selectedShoppingList?.entries,'category'))
-                        .map(([key,entries]) => (<div key={key}>
-                            <h3>{Boolean(key) ? 'Bez kategorii' : key}</h3>
-                            {entries.map((entry) => (
-                                <ShoppingListEntry
-                                    key={entry.id}
-                                    shoppingList={selectedShoppingList}
-                                    onEdit={handleOpenShoppingListEntryEditDialog}
-                                    onDelete={handleOpenShoppingListEntryDeleteDialog}
-
-                                    data={entry} />
-                                ))
-                            }
-                        </div>))
-                }*/}
             </EntriesContainer>
             <FAB
                 onClick={handleOpenShoppingListEntryCreateDialog}
