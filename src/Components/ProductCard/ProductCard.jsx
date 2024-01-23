@@ -9,7 +9,7 @@ import kcalImage from '@/Assets/kcal.png';
 
 
 const Container = styled(Card)`
-  width: 300px;
+  width: 280px;
   height: 430px;
 `
 
