@@ -12,6 +12,7 @@ import {Add, Delete, Edit} from "@mui/icons-material";
 import toast from "react-hot-toast";
 import ProductCategoriesAPI from "@/API/ProductCategoriesAPI";
 import ProductCEDialog from "@/Dialogs/ProductCEDialog";
+import {useNavigate} from "react-router-dom";
 
 
 const Container = styled.div`
@@ -54,6 +55,8 @@ const ProductsView = () => {
     const [productDialogOpen,setProductDialogOpen] = useState(false);
     const [editMode,setEditMode] = useState(false);
     const [editId,setEditId] = useState(null);
+
+    const navigate = useNavigate();
 
     const load = async (append = false) => {
         store.dispatch(requestProducts());
@@ -133,6 +136,9 @@ const ProductsView = () => {
             tools={tools}
             onSelect={(selected) => setSelectedIds(selected)}
             inlineTools={inlineTools}
+            onRowClick={(id) => {
+                navigate(`/produkty/${id}`);
+            }}
         />
 
     </Container>

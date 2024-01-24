@@ -10,27 +10,37 @@ import {
 } from "@mui/material";
 import {forwardRef, useEffect, useRef, useState} from "react";
 import {useFormik} from "formik";
-import ShoppingListSchema from "@/Schemas/ShoppingListSchema";
-import StringUtils from "@/Utils/StringUtils";
-import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import toast from "react-hot-toast";
-import ShoppingListReducer, {requestShoppingLists, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
 
 import store from "@/Store/store";
 import {useSelector} from "react-redux";
-import AsyncAutocompleter from "@/Components/AsyncAutocomplete/AsyncAutocomplete";
-import {ray} from "node-ray/web";
 import ProductAPI from "@/API/ProductsAPI";
-import ProductCategoriesAPI from "@/API/ProductCategoriesAPI";
-import ProductCategorySchema from "@/Schemas/ProductCategorySchema";
 import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
 import ProductSchema from "@/Schemas/ProductSchema";
 import {requestProducts} from "@/Store/Reducers/ProductReducer";
+import DataTable from "@/Components/DataTable/DataTable";
+
 
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Grow /*direction="down"*/ ref={ref} {...props} />;
 });
+
+const unitTableColumns = [
+    {
+        name: 'id',
+        label: 'ID',
+    },{
+        name: 'name',
+        label: 'Nazwa',
+    },{
+        name: 'grams_per_unit',
+        label: 'Gramatura',
+    },{
+        name:'default',
+        label: 'Domyślna',
+    }
+];
 
 const ProductCEDialog = (
     {
@@ -256,7 +266,20 @@ const ProductCEDialog = (
                                     helperText={formik.touched.nutrition_salt && formik.errors.nutrition_salt}
                                 />
                             </Grid>
+                            {
+                                editMode && (
+                                    <Grid item xs={12}>
+                                        <DataTable
+                                            canSelect={false}
+                                            title={'Jednostki'}
+                                            columns={unitTableColumns}
+                                            data={productToEdit?.units}
+                                        />
+                                    </Grid>
+                                )
+                            }
                         </Grid>
+
                     </DialogContent>
                     <DialogActions>
                         <Button color={'warning'} onClick={handleClose}>Anuluj</Button>

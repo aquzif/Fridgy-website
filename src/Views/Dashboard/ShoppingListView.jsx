@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {requestShoppingLists, selectShoppingList} from "@/Store/Reducers/ShoppingListReducer";
 import store from "@/Store/store";
-import {FormControl, Grid, IconButton, InputLabel, LinearProgress, MenuItem, Select, Tooltip} from "@mui/material";
+import {FormControl, Grid, InputLabel, LinearProgress, MenuItem, Select} from "@mui/material";
 
 
 import {Add, Delete, EditNote, Refresh} from "@mui/icons-material";
@@ -16,7 +16,6 @@ import ShoppingListEntryCEDialog from "@/Dialogs/ShoppingListEntryCEDialog";
 import ShoppingListEntry from "@/Components/ShoppingListEntry/ShoppingListEntry";
 
 import ShoppingListEntriesAPI from "@/API/ShoppingListEntriesAPI";
-import ArrayUtils from "@/Utils/ArrayUtils";
 import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
 import useVisiblityChange from "@/Hooks/useVisiblityChange";
 import ShoppingListUtils from "@/Utils/ShoppingListUtils";

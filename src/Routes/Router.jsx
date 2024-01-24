@@ -11,6 +11,7 @@ import ProductsView from "@/Views/Dashboard/ProductsView";
 import store from "@/Store/store";
 import {expire} from "@/Store/Reducers/AuthReducer";
 import CategoriesView from "@/Views/Dashboard/CategoriesView";
+import ProductView from "@/Views/Dashboard/ProductView";
 
 const Router = () => {
 
@@ -41,6 +42,7 @@ const Router = () => {
                                 <Route path="/" element={<Navigate to={'/lista-zakupow'} />} />
                                 <Route path="/lista-zakupow" element={<ShoppingListView />} />
                                 <Route path="/przepisy" element={<RecipesView />} />
+                                <Route path="/produkty/:id" element={<ProductView />} />
                                 <Route path="/produkty" element={<ProductsView />} />
                                 <Route path="/kategorie" element={<CategoriesView />} />
                                 <Route path="*" element={<NotFoundView />} />

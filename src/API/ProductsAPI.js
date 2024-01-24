@@ -17,7 +17,7 @@ export default class ProductsAPI {
         const result = await RequestUtils.apiPost('/api/product', data);
 
         if(result.status !== 201){
-            throw new Error('ProductCategoriesAPI.create() failed, status: ' + result.status);
+            throw new Error('ProductsAPI.create() failed, status: ' + result.status);
         }
 
         return result;

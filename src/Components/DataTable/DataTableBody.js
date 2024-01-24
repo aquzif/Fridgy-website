@@ -63,7 +63,24 @@ const DataTableBody = ({
                         {columns.map((column) => {
                             return <TableCell
                                 key={column.name}
-                            >{row[column.name]}</TableCell>
+                            >
+
+                                {
+                                    (row[column.name] === true ||
+                                    row[column.name] === false) ? (
+                                        <Checkbox
+                                            color="primary"
+                                            checked={row[column.name]}
+                                            inputProps={{
+                                                'aria-labelledby': labelId,
+                                            }}
+                                        />
+                                    ) : row[column.name]
+                                }
+
+
+
+                            </TableCell>
                         })}
                         {
                             inlineTools.length > 0 && <TableCell align="right">
