@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 
-const ShoppingListSchema = Yup.object().shape({
+const ProductCategorySchema = Yup.object().shape({
     name: Yup.string().required('Pole wymangane')
         .trim()
         .min(3, 'Nazwa musi mieć minimum 3 znaki')
@@ -10,4 +10,4 @@ const ShoppingListSchema = Yup.object().shape({
 
 });
 
-export default ShoppingListSchema;
+export default ProductCategorySchema;

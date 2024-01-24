@@ -1,17 +1,14 @@
-import styled from "styled-components";
-import {Box, Card, CardContent, CardMedia, Grid, Typography} from "@mui/material";
-import ProductCard from "@/Components/ProductCard/ProductCard";
 import {useEffect, useState} from "react";
 import ProductsAPI from "@/API/ProductsAPI";
 import DataTable from "@/Components/DataTable/DataTable";
+import styled from "styled-components";
+import ProductCategoriesAPI from "@/API/ProductCategoriesAPI";
+import {Add, Delete, Edit} from "@mui/icons-material";
 import store from "@/Store/store";
 import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
-import productReducer, {requestProducts} from "@/Store/Reducers/ProductReducer";
 import {useSelector} from "react-redux";
-import {Add, Delete, Edit} from "@mui/icons-material";
+import CategoryCEDialog from "@/Dialogs/CategoryCEDialog";
 import toast from "react-hot-toast";
-import ProductCategoriesAPI from "@/API/ProductCategoriesAPI";
-import ProductCEDialog from "@/Dialogs/ProductCEDialog";
 
 
 const Container = styled.div`
@@ -33,35 +30,43 @@ const columns = [
         'name': 'id',
         'label': 'ID',
         //'searchValue': (val) => val,
-    },{
+    }, {
         'name': 'name',
         'label': 'Nazwa',
-    },{
-        'name': 'nutrition_energy_kcal',
-        'label': 'Kalorii na 100 gram',
-    },{
-        'name': 'category',
-        'label': 'Kategoria',
     }
 ];
 
+const CategoriesView = () => {
 
-
-const ProductsView = () => {
-
-    const {products,isLoading} = useSelector(state => state.productReducer);
-    const [selectedIds,setSelectedIds] = useState([]);
-    const [productDialogOpen,setProductDialogOpen] = useState(false);
+    const {productCategories,isLoading} = useSelector(state => state.productCategoryReducer);
+    const [categoryDialogOpen,setCategoryDialogOpen] = useState(false);
     const [editMode,setEditMode] = useState(false);
     const [editId,setEditId] = useState(null);
+    const [selectedIds,setSelectedIds] = useState([]);
 
     const load = async (append = false) => {
-        store.dispatch(requestProducts());
+        store.dispatch(requestProductCategories());
     }
 
-    useEffect(() => {
+    const inlineTools = [
+        {
+            'name': 'edit',
+            'label': 'Edytuj',
+            'icon': <Edit />,
+            'onClick': async (row) => {
+                setEditId(row.id);
+                setEditMode(true);
+                setCategoryDialogOpen(true);
+            }
+        }
+    ]
+
+    const deleteSelected = async () => {
+        for(let category of productCategories.filter((category) => selectedIds.includes(category.id))){
+            await ProductCategoriesAPI.delete(category.id);
+        }
         load();
-    },[]);
+    }
 
     const tools = [
         {
@@ -71,7 +76,7 @@ const ProductsView = () => {
             'onClick': async () => {
                 setEditId(null);
                 setEditMode(false);
-                setProductDialogOpen(true);
+                setCategoryDialogOpen(true);
             }
         },{
             'name': 'delete',
@@ -89,54 +94,40 @@ const ProductsView = () => {
         }
     ];
 
-    const inlineTools = [
-        {
-            'name': 'edit',
-            'label': 'Edytuj',
-            'icon': <Edit />,
-            'onClick': async (row) => {
-                setEditId(row.id);
-                setEditMode(true);
-                setProductDialogOpen(true);
-            }
-        }
-    ]
-
-    const deleteSelected = async () => {
-        for(let product of products.filter((product) => selectedIds.includes(product.id))){
-            await ProductsAPI.delete(product.id);
-        }
+    useEffect(() => {
         load();
-    }
+    },[]);
 
     const handleDialogClose = (success) => {
         setEditId(null);
         setEditMode(false);
-        setProductDialogOpen(false);
+        setCategoryDialogOpen(false);
         if(success)
             load();
     }
 
+
     return <Container>
-        <ProductCEDialog
-            open={productDialogOpen}
+        <CategoryCEDialog
+            open={categoryDialogOpen}
             onClose={handleDialogClose}
             editMode={editMode}
             editId={editId}
         />
+
         <DataTable
-            title={'Produkty'}
+            title={'Kategorie'}
             isLoading={isLoading}
             searchBar={true}
-            data={products}
+            data={productCategories}
             columns={columns}
+            inlineTools={inlineTools}
             tools={tools}
             onSelect={(selected) => setSelectedIds(selected)}
-            inlineTools={inlineTools}
         />
 
     </Container>
 
 }
 
-export default ProductsView;
+export default CategoriesView;

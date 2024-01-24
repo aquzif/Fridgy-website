@@ -6,7 +6,7 @@ import fatImage from '@/Assets/fat.png';
 import carbsImage from '@/Assets/carbs.png';
 import proteinImage from '@/Assets/protein.png';
 import kcalImage from '@/Assets/kcal.png';
-
+import placeholderImage from '@/Assets/placeholder.png';
 
 const Container = styled(Card)`
   width: 280px;
@@ -68,7 +68,7 @@ const ProductCard = (
         <CardMedia
             component="img"
             height="194"
-            image="https://picsum.photos/500/500?random=1"
+            image={placeholderImage}
             alt="Paella dish"
         />
         <CardContent

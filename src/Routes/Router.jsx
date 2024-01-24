@@ -10,6 +10,7 @@ import RecipesView from "@/Views/Dashboard/RecipesView";
 import ProductsView from "@/Views/Dashboard/ProductsView";
 import store from "@/Store/store";
 import {expire} from "@/Store/Reducers/AuthReducer";
+import CategoriesView from "@/Views/Dashboard/CategoriesView";
 
 const Router = () => {
 
@@ -41,6 +42,7 @@ const Router = () => {
                                 <Route path="/lista-zakupow" element={<ShoppingListView />} />
                                 <Route path="/przepisy" element={<RecipesView />} />
                                 <Route path="/produkty" element={<ProductsView />} />
+                                <Route path="/kategorie" element={<CategoriesView />} />
                                 <Route path="*" element={<NotFoundView />} />
                             </Route>
 

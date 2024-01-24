@@ -1,14 +1,15 @@
 import NetworkUtils from "@/Utils/NetworkUtils";
 import GlobalUnitsAPI from "@/API/GlobalUnitsAPI";
-import {failure, success} from "@/Store/Reducers/ProductCategoryReducer";
+import {failure, success} from "@/Store/Reducers/ProductReducer";
 import ProductCategoriesAPI from "@/API/ProductCategoriesAPI";
 import { put } from 'redux-saga/effects'
+import ProductAPI from "@/API/ProductsAPI";
 
-function* fetchGlobalCategories (){
+function* fetchProduct (){
 
     if(!NetworkUtils.isOnline()) return;
 
-    const response = yield ProductCategoriesAPI.getAll();
+    const response = yield ProductAPI.getAll();
     console.log(response);
 
     if(response.status !== 200) {
@@ -18,4 +19,4 @@ function* fetchGlobalCategories (){
 
 }
 
-export default fetchGlobalCategories;
+export default fetchProduct;

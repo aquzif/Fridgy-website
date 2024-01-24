@@ -2,7 +2,7 @@ import RequestUtils from "@/Utils/RequestUtils";
 
 export default class ProductsAPI {
     static async getAll(page = 1) {
-        return await RequestUtils.apiGet(`/api/product?page=${page}`);
+        return await RequestUtils.apiGet(`/api/product`);
     }
 
     static async search(search) {
