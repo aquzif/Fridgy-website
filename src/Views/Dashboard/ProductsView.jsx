@@ -1,16 +1,12 @@
 import styled from "styled-components";
-import {Box, Card, CardContent, CardMedia, Grid, Typography} from "@mui/material";
-import ProductCard from "@/Components/ProductCard/ProductCard";
 import {useEffect, useState} from "react";
 import ProductsAPI from "@/API/ProductsAPI";
 import DataTable from "@/Components/DataTable/DataTable";
 import store from "@/Store/store";
-import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer";
 import productReducer, {requestProducts} from "@/Store/Reducers/ProductReducer";
 import {useSelector} from "react-redux";
 import {Add, Delete, Edit} from "@mui/icons-material";
 import toast from "react-hot-toast";
-import ProductCategoriesAPI from "@/API/ProductCategoriesAPI";
 import ProductCEDialog from "@/Dialogs/ProductCEDialog";
 import {useNavigate} from "react-router-dom";
 

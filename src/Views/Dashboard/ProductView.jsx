@@ -101,7 +101,6 @@ const ProductView = () => {
                     error: 'Nie udało się usunąć kategorii'
                 });
             }
-
         }
     ];
 

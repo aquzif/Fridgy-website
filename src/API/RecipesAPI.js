@@ -5,9 +5,9 @@ export default class RecipesAPI {
         return await RequestUtils.apiGet(`/api/recipe`);
     }
 
-    /*static async search(search) {
+    static async search(search) {
         return await RequestUtils.apiGet('/api/product/search?query=' + encodeURI(search));
-    }*/
+    }
 
     static async get(id) {
         return await RequestUtils.apiGet('/api/recipe/' + id);

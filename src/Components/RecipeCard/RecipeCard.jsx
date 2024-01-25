@@ -1,15 +1,17 @@
 import {Box, Card, CardActions, CardContent, CardMedia, IconButton, Typography} from "@mui/material";
 import styled from "styled-components";
-import {Favorite, Share} from "@mui/icons-material";
+import {Edit, Favorite, FavoriteBorder} from "@mui/icons-material";
 
 import fatImage from '@/Assets/fat.png';
 import carbsImage from '@/Assets/carbs.png';
 import proteinImage from '@/Assets/protein.png';
 import kcalImage from '@/Assets/kcal.png';
 import placeholderImage from '@/Assets/placeholder.png';
+import {useNavigate} from "react-router-dom";
+import NetworkUtils from "@/Utils/NetworkUtils";
 
 const Container = styled(Card)`
-  width: 280px;
+  width: 100%;
   height: 430px;
 `
 
@@ -46,29 +48,31 @@ const CardStats = (
 }
 
 
-const ProductCard = (
+const RecipeCard = (
     {
         data
     }
 ) => {
     //https://picsum.photos/200/300
 
+
+
     const {
         id,
         name,
-        nutrition_carbs,
-        nutrition_energy_kcal,
-        nutrition_protein,
-        nutrition_fat,
+        preapre_time,
+        serving_amount,
+        calories_per_serving,
+        image
     } = data;
 
-    console.log(data);
+    const navigate = useNavigate();
 
     return <Container sx={{ display: 'flex',flexDirection: 'column' }}>
         <CardMedia
             component="img"
             height="194"
-            image={placeholderImage}
+            image={NetworkUtils.fixBackendUrl(image) || placeholderImage}
             alt="Paella dish"
         />
         <CardContent
@@ -77,47 +81,48 @@ const ProductCard = (
             <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} variant={'h6'} gutterBottom>
                 {name}
             </Typography>
-            <Typography sx={{ fontSize: 14}} color="text.secondary" gutterBottom>
+           {/* <Typography sx={{ fontSize: 14}} color="text.secondary" gutterBottom>
                 na 100 gram
-            </Typography>
+            </Typography>*/}
             <div style={{display: 'flex',flexDirection: 'row', justifyContent: 'space-between',flexWrap: 'wrap' }} >
-               <CardStats
+               {/*<CardStats
                    image={fatImage}
                    alt="fat-image"
                    val={nutrition_fat}
                    text="g tłuszczu"
-               />
+               />*/}
                 <CardStats
                     image={carbsImage}
                     alt="carbs-image"
-                    val={nutrition_carbs}
-                    text="g carbs"
+                    val={preapre_time}
+                    text=" minut"
                 />
                 <CardStats
                     image={proteinImage}
                     alt="protein-image"
-                    val={nutrition_protein}
-                    text="g białka"
+                    val={serving_amount}
+                    text=" porcji"
                 />
                 <CardStats
                     image={kcalImage}
                     alt="kcal-image"
-                    val={nutrition_energy_kcal}
+                    val={calories_per_serving}
                     text=" kalorii"
                 />
             </div>
         </CardContent>
         <CardActions disableSpacing sx={{position: 'relative',top: '-15px'}}>
             <IconButton aria-label="add to favorites">
-                <Favorite />
+                <FavoriteBorder />
             </IconButton>
-            <IconButton aria-label="share">
-                <Share />
+            <IconButton
+                onClick={() => navigate(`/przepisy/${id}`)}
+                aria-label="share">
+                <Edit />
             </IconButton>
-
         </CardActions>
     </Container>
 
 }
 
-export default ProductCard;
+export default RecipeCard;
