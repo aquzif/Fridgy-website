@@ -12,6 +12,7 @@ const AsyncAutocompleter = (
     {
         disabled = false,
         onSelect = () => {},
+        oldValue = null,
         allowCustomValues = false,
         label = '',
         onSearch,
@@ -21,21 +22,27 @@ const AsyncAutocompleter = (
     }
 ) => {
 
+    const searchInput = React.useRef(null);
+
     const [searchValue, setSearchValue] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     const [options, setOptions] = useState([]);
     const debouncedSearchValue = useDebounce(searchValue, 500);
 
+
+
     if(!filterOptions)
         filterOptions =  (options, params) => {
-            const filtered = options;
+            let filtered = options;
 
             if (allowCustomValues && params.inputValue !== '') {
-                filtered.push({
-                    inputValue: params.inputValue,
-                    new: true,
-                    name: params.inputValue,
-                });
+                filtered = [
+                    {
+                        inputValue: params.inputValue,
+                        new: true,
+                        name: params.inputValue,
+                    },...filtered
+                ];
             }
             return filtered;
         }
@@ -51,6 +58,12 @@ const AsyncAutocompleter = (
         let result = await onSearch(debouncedSearchValue);
 
         setIsSearching(false);
+
+        //select top 3 results
+        if(result?.length > 2){
+            result = result.slice(0,2);
+        }
+
         setOptions(result || []);
     }
 
@@ -79,6 +92,7 @@ const AsyncAutocompleter = (
                 error={error !== ''}
                 helperText={error}
                 label={label}
+                ref={searchInput}
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 InputProps={{

@@ -2,7 +2,7 @@ import RequestUtils from "@/Utils/RequestUtils";
 
 export default class RecipesAPI {
     static async getAll(page = 1) {
-        return await RequestUtils.apiGet(`/api/recipe`);
+        return await RequestUtils.apiGet(`/api/recipe?page=${page}`);
     }
 
     static async search(search) {

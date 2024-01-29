@@ -9,6 +9,8 @@ import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer"
 import fetchGlobalCategories from "@/Store/Sagas/ProductCategoryReducer/fetchGlobalCategories";
 import {requestProducts} from "@/Store/Reducers/ProductReducer";
 import fetchProduct from "@/Store/Sagas/ProductReducer/fetchProduct";
+import fetchRecipeTags from "@/Store/Sagas/RecipeTagsReducer/fetchRecipeTags";
+import {requestRecipeTags} from "@/Store/Reducers/RecipeTagsReducer";
 
 
 
@@ -18,6 +20,7 @@ function* saga(){
     yield takeLatest(requestGlobalUnits().type, fetchGlobalUnit);
     yield takeLatest(requestProductCategories().type, fetchGlobalCategories);
     yield takeLatest(requestProducts().type, fetchProduct);
+    yield takeLatest(requestRecipeTags().type, fetchRecipeTags);
 }
 
 

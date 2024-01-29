@@ -1,5 +1,5 @@
 
-const fetchGlobalUnitFailureAction = (state, action) => {
+const fetchRecipeTagsFailureAction = (state, action) => {
     let payload = action.payload;
 
     state.isLoading = false;
@@ -7,5 +7,4 @@ const fetchGlobalUnitFailureAction = (state, action) => {
     state.errorMessage = payload;
 
 }
-
-export default fetchGlobalUnitFailureAction;
+export default fetchRecipeTagsFailureAction;

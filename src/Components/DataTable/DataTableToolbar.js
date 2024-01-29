@@ -83,15 +83,17 @@ const DataTableToolbar = (
                     {title}
                 </Typography>
             )}
-            {searchBar && (
-                <div style={{flex: '1 1 100%'}}>
+
+            <div style={{flex: '1 1 100%'}}>
+                {searchBar && (
                     <Input
                         sx={{width: '70%',marginLeft: '15%'}}
                         placeholder={'Wyszukaj...'}
                         onChange={onSearch}
                     />
-                </div>
-            )}
+                )}
+            </div>
+
             <div style={{minWidth: toolsToDisplay.length*50}}>
                 {
                     toolsToDisplay.map((tool, index) => (<TableTool key={`${tool.name} ${index}`} {...tool} />))

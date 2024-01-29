@@ -4,8 +4,9 @@ import RecipesAPI from "@/API/RecipesAPI";
 import toast from "react-hot-toast";
 import {Grid} from "@mui/material";
 import RecipeCard from "@/Components/RecipeCard/RecipeCard";
-import {Save} from "@mui/icons-material";
+import {Add, Save} from "@mui/icons-material";
 import FAB from "@/Components/FAB/FAB";
+import RecipeCreateDialog from "@/Dialogs/RecipeCreateDialog";
 
 
 const Container = styled.div`
@@ -24,13 +25,22 @@ const RecipesView = () => {
     const [currentPage,setCurrentPage] = useState(0);
     const [totalPages,setTotalPages] = useState(0);
 
-    const load = async () => {
+    const [newRecipeDialogOpen,setNewRecipeDialogOpen] = useState(false);
+
+    const load = async (reset) => {
         setIsLoading(true);
 
-        if(currentPage === totalPages && currentPage !== 0)
-            return;
 
-        const response = await RecipesAPI.getAll(currentPage + 1);
+
+        let response = '';
+        if(reset){
+            response = await RecipesAPI.getAll(1);
+        }else{
+            if(currentPage === totalPages && currentPage !== 0)
+                return;
+            response = await RecipesAPI.getAll(currentPage + 1);
+        }
+
 
         if(response.code >= 400){
             toast.error('Nie udało się pobrać przepisów');
@@ -39,10 +49,15 @@ const RecipesView = () => {
 
         const {data} = response.data;
 
-        console.log(data);
-        setRecipes([...recipes,...data.data]);
-        setCurrentPage(currentPage + 1);
-        setTotalPages(data.last_page);
+        if(!reset){
+            setRecipes([...recipes,...data.data]);
+            setCurrentPage(currentPage + 1);
+            setTotalPages(data.last_page);
+        }else{
+            setRecipes(data.data);
+            setCurrentPage(1);
+            setTotalPages(data.last_page);
+        }
 
         setIsLoading(false);
     }
@@ -55,11 +70,26 @@ const RecipesView = () => {
 
     return <Container>
         <h2>Przepisy</h2>
+        <RecipeCreateDialog
+            open={newRecipeDialogOpen}
+            onClose={(res) => {
+                setNewRecipeDialogOpen(false);
+
+                if(res){
+                    load(true);
+                }
+            }}
+        />
+        <FAB
+            icon={<Add />}
+            onClick={() =>setNewRecipeDialogOpen(true)}
+        />
         <Grid container spacing={2}>
             {
-                [...recipes,...recipes,...recipes].map((recipe) => {
+                recipes.map((recipe) => {
                     return <Grid item xs={12} md={6} lg={3} xl={2} key={recipe.id}>
                         <RecipeCard
+                            onReload={() => load(true)}
                             data={recipe}
                         />
                     </Grid>

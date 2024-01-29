@@ -97,6 +97,7 @@ const ProductCEDialog = (
             handleClose();
         }
     });
+
     useEffect(() => {
         if(open){
             store.dispatch(requestProductCategories());

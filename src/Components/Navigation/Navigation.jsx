@@ -11,6 +11,7 @@ import cogIcon from '@iconify/icons-mdi/cog';
 import baselineMeetingRoom from '@iconify/icons-ic/baseline-meeting-room';
 import chevronLeft from '@iconify/icons-mdi/chevron-left';
 import categoryIcon from '@iconify/icons-mdi/category';
+import gearIcon from '@iconify/icons-mdi/gear';
 import AuthAPI from "@/API/AuthAPI";
 import store from "@/Store/store";
 import {logout} from "@/Store/Reducers/AuthReducer";
@@ -116,7 +117,8 @@ const Navigation = ({
                 <NavItem name={'Lista zakupów'} icon={basketOutline} url={'/lista-zakupow'} />
                 <NavItem name={'Przepisy'} icon={receiptText} url={'/przepisy'} />
                 <NavItem name={'Produkty'} icon={fruitWatermelon} url={'/produkty'} />
-                <NavItem name={'Kategorie'} icon={categoryIcon} url={'/kategorie'} />
+                {/*<NavItem name={'Kategorie'} icon={categoryIcon} url={'/kategorie'} />*/}
+                <NavItem name={'Ustawienia aplikacji'} icon={gearIcon} url={'/admin/ustawienia'} />
 
             </nav>
         </Container>

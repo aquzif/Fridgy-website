@@ -20,7 +20,7 @@ const Container = styled.div`
   border-radius: 10px;
 
   width: calc(100% - 100px);
-
+ 
 `;
 
 
@@ -107,7 +107,7 @@ const CategoriesView = () => {
     }
 
 
-    return <Container>
+    return <div>
         <CategoryCEDialog
             open={categoryDialogOpen}
             onClose={handleDialogClose}
@@ -126,7 +126,7 @@ const CategoriesView = () => {
             onSelect={(selected) => setSelectedIds(selected)}
         />
 
-    </Container>
+    </div>
 
 }
 

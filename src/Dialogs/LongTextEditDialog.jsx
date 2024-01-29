@@ -49,7 +49,6 @@ const LongTextEditDialog = (
                 <TextField
                     style={{width: '100%'}}
                     multiline={true}
-                    rowsMin={10}
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
                 />

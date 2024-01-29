@@ -82,17 +82,19 @@ export default class RequestUtils{
             url = 'http://localhost:8000' + url;
         }
 
-        const axiosConfig = {
+        let axiosConfig = {
             method,
             url,
             headers: {
                 // 'Content-Type': 'application/json',
                 // 'Accept': 'application/json',
                 ...headers,
+                'Content-Type': 'multipart/form-data',
             },
         };
 
         if (method !== 'GET') {
+            console.log('data', data);
             axiosConfig.method = 'POST';
             const formData = new FormData();
             for (const key in data) {
@@ -100,7 +102,9 @@ export default class RequestUtils{
             }
             formData.append('_method', method.toUpperCase());
             axiosConfig.data = formData;
+            axiosConfig.headers['Content-Type'] = 'multipart/form-data;boundary='+formData._boundary;
         }
+        console.log(axiosConfig);
         //if method is put or delete, we need to send the data as form data
 
 
