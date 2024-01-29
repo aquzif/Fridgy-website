@@ -13,6 +13,8 @@ import ConfirmDialog from "@/Dialogs/ConfirmDialog";
 import {useState} from "react";
 import RecipesAPI from "@/API/RecipesAPI";
 import toast from "react-hot-toast";
+import foodRationImage from '@/Assets/food_ration.png';
+import timeImage from '@/Assets/time.png';
 
 const Container = styled(Card)`
   width: 100%;
@@ -120,13 +122,13 @@ const RecipeCard = (
                    text="g tłuszczu"
                />*/}
                 <CardStats
-                    image={carbsImage}
+                    image={timeImage}
                     alt="carbs-image"
                     val={preapre_time}
                     text=" minut"
                 />
                 <CardStats
-                    image={proteinImage}
+                    image={foodRationImage}
                     alt="protein-image"
                     val={serving_amount}
                     text=" porcji"

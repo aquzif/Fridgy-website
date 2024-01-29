@@ -42,7 +42,7 @@ const Subtitle = styled.h4`
 
 
 
-const EntryRawProductContent = ({data, checked}) =>
+export const EntryRawProductContent = ({data, checked = false}) =>
     <>
         <Title checked={checked} >{data.product_name}</Title>
         <Subtitle checked={checked} >{data.amount} x {data.unit_name}</Subtitle>
