@@ -43,6 +43,8 @@ const TopBar = ({
     const isMobile = useMediaQuery('(max-width: 768px)');
     const navigate = useNavigate();
 
+
+
     return (
         <Container>
             {isMobile && <>
