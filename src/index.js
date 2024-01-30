@@ -3,6 +3,13 @@ import ReactDOM from 'react-dom/client';
 import App from "@/App/App";
 import * as serviceWorkerRegistration from "@/serviceWorkerRegistration";
 import reportWebVitals from "@/reportWebVitals";
+import 'dayjs/locale/pl';
+import dayjs from 'dayjs';
+
+
+
+dayjs.locale('pl');
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

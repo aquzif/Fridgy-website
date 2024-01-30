@@ -11,6 +11,8 @@ import {requestProducts} from "@/Store/Reducers/ProductReducer";
 import fetchProduct from "@/Store/Sagas/ProductReducer/fetchProduct";
 import fetchRecipeTags from "@/Store/Sagas/RecipeTagsReducer/fetchRecipeTags";
 import {requestRecipeTags} from "@/Store/Reducers/RecipeTagsReducer";
+import {refreshUser} from "@/Store/Reducers/AuthReducer";
+import fetchUser from "@/Store/Sagas/AuthReducer/fetchUser";
 
 
 
@@ -21,6 +23,7 @@ function* saga(){
     yield takeLatest(requestProductCategories().type, fetchGlobalCategories);
     yield takeLatest(requestProducts().type, fetchProduct);
     yield takeLatest(requestRecipeTags().type, fetchRecipeTags);
+    yield takeLatest(refreshUser().type, fetchUser);
 }
 
 

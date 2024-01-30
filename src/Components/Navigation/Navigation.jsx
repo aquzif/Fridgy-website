@@ -11,6 +11,7 @@ import cogIcon from '@iconify/icons-mdi/cog';
 import baselineMeetingRoom from '@iconify/icons-ic/baseline-meeting-room';
 import chevronLeft from '@iconify/icons-mdi/chevron-left';
 import categoryIcon from '@iconify/icons-mdi/category';
+import calendarIcon from '@iconify/icons-mdi/calendar';
 import gearIcon from '@iconify/icons-mdi/gear';
 import AuthAPI from "@/API/AuthAPI";
 import store from "@/Store/store";
@@ -114,6 +115,7 @@ const Navigation = ({
                 <MiniNavItem icon={baselineMeetingRoom} onClick={onLogoutClick} />
             </MiniNav>
             <nav>
+                <NavItem name={'Kalendarz'} icon={calendarIcon} url={'/kalendarz'} />
                 <NavItem name={'Lista zakupów'} icon={basketOutline} url={'/lista-zakupow'} />
                 <NavItem name={'Przepisy'} icon={receiptText} url={'/przepisy'} />
                 <NavItem name={'Produkty'} icon={fruitWatermelon} url={'/produkty'} />
