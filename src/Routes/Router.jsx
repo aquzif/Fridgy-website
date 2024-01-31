@@ -18,7 +18,8 @@ import RecipeView from "@/Views/Dashboard/RecipeView";
 import CalendarView from "@/Views/Dashboard/CalendarView";
 import ProfileView from "@/Views/Dashboard/ProfileView";
 import UserSettingsView from "@/Views/Dashboard/UserSettingsView";
-import BarcodeScanner from "@/Views/Dashboard/BarcodeScanner";
+import BarcodeScannerView from "@/Views/Dashboard/BarcodeScannerView";
+import BarcodeResultsView from "@/Views/Dashboard/BarcodeResultsView";
 
 const Router = () => {
 
@@ -57,7 +58,8 @@ const Router = () => {
                                 <Route path="/kategorie" element={<CategoriesView />} />
                                 <Route path="/profil" element={<ProfileView />} />
                                 <Route path="/ustawienia" element={<UserSettingsView />} />
-                                <Route path="/skaner" element={<BarcodeScanner />} />
+                                <Route path="/skaner/:barcode" element={<BarcodeResultsView />} />
+                                <Route path="/skaner" element={<BarcodeScannerView />} />
                                 <Route path="/admin/ustawienia" element={<SettingsView />} />
                                 <Route path="*" element={<NotFoundView />} />
                             </Route>
