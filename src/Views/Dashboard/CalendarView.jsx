@@ -19,6 +19,7 @@ import SourceSelectDialog from "@/Dialogs/SourceSelectDialog";
 import {Swiper, SwiperSlide} from "swiper/react";
 
 import "swiper/css";
+import {useNavigate} from "react-router-dom";
 
 const DateContainer = styled.div`
   display: inline-block;
@@ -64,19 +65,26 @@ const CustDatePicker = (props) => {
     />
 }
 
-const getMealFromData = (date,mealNo,meals,title, onClick) => {
+const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit}) => {
+
+    const navigate = useNavigate();
+
     for(let meal of meals){
         if(date.isSame(meal.date,'day') && meal.meal_order === mealNo){
             switch(meal.entry_type){
                 case "from_recipe":
-                    return <CalendarMealRecipe meal={meal} mealName={title} onClick={onClick} />
+                    return <CalendarMealRecipe
+                        meal={meal}
+                        mealName={title}
+                        onClick={() => navigate(`/przepisy/${meal.recipe.id}`)}
+                        onEdit={onEdit} />
                 default:
                     return 'ERROR';
             }
 
         }
     }
-    return <CalendarMealPlaceholder mealName={title} onClick={onClick} />
+    return <CalendarMealPlaceholder mealName={title} onClick={onEdit} onEdit={onEdit} />
 }
 
 const mealTitles = (amount) => {
@@ -176,15 +184,25 @@ const CalendarView = () => {
                 max={Math.round(user?.calories_per_day || 0)}
             />
             {
-                mealTitles(user?.meals_per_day|| 1).map((title,index) => {
-                    return getMealFromData(date,index,entries,title,() => {
-                        setOpenSourceSelectDialog(true);
-                        setSelectedEditData({
-                            date: date.format('YYYY-MM-DD'),
-                            mealNo: index
-                        })
-                    });
-                })
+                mealTitles(user?.meals_per_day|| 1).map((title,index) =>
+                    <GetMealFromData
+                        date={date}
+                        mealNo={index}
+                        meals={entries}
+                        title={title}
+                        onClick={() => {
+
+                        }}
+                        onEdit={ () => {
+                            setOpenSourceSelectDialog(true);
+                            setSelectedEditData({
+                                date: date.format('YYYY-MM-DD'),
+                                mealNo: index
+                            })
+                        }}
+                    />
+
+                )
             }
         </DateContainer>
     });

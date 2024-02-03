@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import NetworkUtils from "@/Utils/NetworkUtils";
+import {IconButton} from "@mui/material";
+import {Edit} from "@mui/icons-material";
 
 const Container = styled.div`
   height: 160px;
@@ -40,12 +42,25 @@ const RecipeName = styled.p`
   bottom: 0;
 `;
 
+const RecipeEditButton = styled.div`
+position: absolute;
+  top: -6px;
+  right: -6px;
+  padding: 5px;
+  
+`;
 
 
-const CalendarMealRecipe = ({meal,mealName,onClick}) => {
+const CalendarMealRecipe = ({meal,mealName,onClick, onEdit}) => {
+
+    const handleClick = (e) => {
+        if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'svg' && e.target.tagName !== 'path'){
+            onClick();
+        }
+    }
 
     return <Container
-        onClick={onClick}
+        onClick={handleClick}
         style={{backgroundImage: `url(${NetworkUtils.fixBackendUrl(meal.recipe.image)})`}}
     >
         <MealName>
@@ -54,7 +69,11 @@ const CalendarMealRecipe = ({meal,mealName,onClick}) => {
         <RecipeName>
             {meal.recipe.name}
         </RecipeName>
-
+        <RecipeEditButton >
+            <IconButton onClick={onEdit} >
+                <Edit sx={{color: 'white'}} />
+            </IconButton>
+        </RecipeEditButton>
     </Container>
 }
 
