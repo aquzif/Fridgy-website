@@ -13,7 +13,7 @@ export default class CalendarEntriesAPI {
     static async create(data) {
         const result = await RequestUtils.apiPost('/api/calendar-entry', data);
 
-        if(result.status !== 201){
+        if(result.status >=300){
             throw new Error('CalendarEntriesAPI.create() failed, status: ' + result.status);
         }
 

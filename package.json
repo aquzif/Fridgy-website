@@ -30,6 +30,7 @@
     "redux-saga": "^1.2.3",
     "sass": "^1.63.6",
     "styled-components": "^5.3.10",
+    "swiper": "^11.0.5",
     "web-vitals": "^2.1.4",
     "workbox-background-sync": "^6.6.0",
     "workbox-broadcast-update": "^6.6.0",

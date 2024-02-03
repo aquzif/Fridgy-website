@@ -14,6 +14,11 @@ import {refreshUser} from "@/Store/Reducers/AuthReducer";
 import store from "@/Store/store";
 import CalendarMealPlaceholder from "@/Components/CalendarMealEntry/CalendarMealPlaceholder";
 import CalendarMealRecipe from "@/Components/CalendarMealEntry/CalendarMealRecipe";
+import RecipeSelectorDialog from "@/Dialogs/RecipeSelectorDialog";
+import SourceSelectDialog from "@/Dialogs/SourceSelectDialog";
+import {Swiper, SwiperSlide} from "swiper/react";
+
+import "swiper/css";
 
 const DateContainer = styled.div`
   display: inline-block;
@@ -22,6 +27,11 @@ const DateContainer = styled.div`
   margin: 10px;
   padding: 20px;
   border-radius: 10px;
+  
+  
+    @media (max-width: 768px) {
+      width: calc(100% - 60px);
+    }
 `;
 
 const Title = styled.p`
@@ -49,19 +59,19 @@ const CustDatePicker = (props) => {
     />
 }
 
-const getMealFromData = (date,mealNo,meals,title) => {
+const getMealFromData = (date,mealNo,meals,title, onClick) => {
     for(let meal of meals){
         if(date.isSame(meal.date,'day') && meal.meal_order === mealNo){
             switch(meal.entry_type){
                 case "from_recipe":
-                    return <CalendarMealRecipe meal={meal} mealName={title} />
+                    return <CalendarMealRecipe meal={meal} mealName={title} onClick={onClick} />
                 default:
                     return 'ERROR';
             }
 
         }
     }
-    return <CalendarMealPlaceholder mealName={title} />
+    return <CalendarMealPlaceholder mealName={title} onClick={onClick} />
 }
 
 const mealTitles = (amount) => {
@@ -97,6 +107,11 @@ const CalendarView = () => {
     const [entries,setEntries] = useState([]);
     const isMobile = useMediaQuery('(max-width: 768px)');
 
+    const [openSourceSelectDialog,setOpenSourceSelectDialog] = useState(false);
+    const [selectedSource,setSelectedSource] = useState(null);
+    const [selectedEditData,setSelectedEditData] = useState(null);
+
+
     const user = useSelector(state => state.authReducer.user);
 
     const load = async () => {
@@ -120,10 +135,69 @@ const CalendarView = () => {
         load();
     }, [dateFrom,dateTo]);
 
+    const handleCloseSourceInputDialog = () => {
+        setSelectedSource(null);
+        setSelectedEditData(null);
+    }
 
+    const selectRecipe = async (recipe) => {
+        console.log('RECIPE',recipe);
+        await toast.promise(CalendarEntriesAPI.create({
+            "type" :"from_recipe",
+            "date": selectedEditData.date,
+            "meal_order": selectedEditData.mealNo,
+            "recipe_id": recipe.id
+        }),{
+            loading: 'Dodawanie przepisu...',
+            success: 'Pomyślnie dodano przepis',
+            error: 'Nie udało się dodać przepisu'
+        });
+
+        handleCloseSourceInputDialog();
+        load();
+    }
+
+    const columns = DatesUtils.getDatesBetween(dateFrom,dateTo).map((date) => {
+        return <DateContainer
+            style={date.isSame(dayjs(),'day') && {
+                backgroundColor: '#f3fff3'
+            } || {}}
+        >
+            <h4 style={{textAlign:'center',paddingBottom:'5px'}} >{DatesUtils.getNameOfWeekDay(date)}</h4>
+            <p style={{textAlign: 'center'}} >{date.format('DD-MM-YYYY')}</p>
+            <DoubleProgress
+                label={'Kalorie:'}
+                val={getCaloriesPerDate(date,entries)}
+                max={Math.round(user?.calories_per_day || 0)}
+            />
+            {
+                mealTitles(user?.meals_per_day|| 1).map((title,index) => {
+                    return getMealFromData(date,index,entries,title,() => {
+                        setOpenSourceSelectDialog(true);
+                        setSelectedEditData({
+                            date: date.format('YYYY-MM-DD'),
+                            mealNo: index
+                        })
+                    });
+                })
+            }
+        </DateContainer>
+    });
 
     return <Container>
-
+        <SourceSelectDialog
+            open={openSourceSelectDialog}
+            onClose={() => setOpenSourceSelectDialog(false)}
+            onSelect={(source) => {
+                setOpenSourceSelectDialog(false);
+                setSelectedSource(source)
+            }}
+        />
+        <RecipeSelectorDialog
+            open={selectedSource === 'recipe'}
+            onClose={handleCloseSourceInputDialog}
+            onSelect={selectRecipe}
+        />
         <div style={!isMobile && {
             display: 'flex',
             flexDirection: 'row',
@@ -155,28 +229,13 @@ const CalendarView = () => {
         </Box>
 
         <DatesContainer>
-            {
-                DatesUtils.getDatesBetween(dateFrom,dateTo).map((date) => {
-                    return <DateContainer
-                        style={date.isSame(dayjs(),'day') && {
-                            backgroundColor: '#f3fff3'
-                        } || {}}
-                    >
-                        <h4 style={{textAlign:'center',paddingBottom:'5px'}} >{DatesUtils.getNameOfWeekDay(date)}</h4>
-                        <p style={{textAlign: 'center'}} >{date.format('DD-MM-YYYY')}</p>
-                        <DoubleProgress
-                            label={'Kalorie:'}
-                            val={getCaloriesPerDate(date,entries)}
-                            max={Math.round(user?.calories_per_day || 0)}
-                        />
-                        {
-                            mealTitles(user?.meals_per_day|| 1).map((title,index) => {
-                                return getMealFromData(date,index,entries,title);
-                            })
-                        }
-                    </DateContainer>
-                })
-            }
+            {isMobile ? <Swiper>
+                {
+                    columns.map((column) =>
+                        <SwiperSlide>{column}</SwiperSlide>
+                    )
+                }
+            </Swiper> : columns}
         </DatesContainer>
 
 

@@ -10,7 +10,7 @@ import accountIcon from '@iconify/icons-mdi/account';
 import cogIcon from '@iconify/icons-mdi/cog';
 import baselineMeetingRoom from '@iconify/icons-ic/baseline-meeting-room';
 import chevronLeft from '@iconify/icons-mdi/chevron-left';
-import categoryIcon from '@iconify/icons-mdi/category';
+import burgerIcon from '@iconify/icons-mdi/burger';
 import calendarIcon from '@iconify/icons-mdi/calendar';
 import gearIcon from '@iconify/icons-mdi/gear';
 import AuthAPI from "@/API/AuthAPI";
@@ -118,8 +118,8 @@ const Navigation = ({
                 <NavItem name={'Kalendarz'} icon={calendarIcon} url={'/kalendarz'} />
                 <NavItem name={'Lista zakupów'} icon={basketOutline} url={'/lista-zakupow'} />
                 <NavItem name={'Przepisy'} icon={receiptText} url={'/przepisy'} />
+                <NavItem name={'Fast Food'} icon={burgerIcon} url={'/fast-food'} />
                 <NavItem name={'Produkty'} icon={fruitWatermelon} url={'/produkty'} />
-                {/*<NavItem name={'Kategorie'} icon={categoryIcon} url={'/kategorie'} />*/}
                 <NavItem name={'Ustawienia aplikacji'} icon={gearIcon} url={'/admin/ustawienia'} />
 
             </nav>

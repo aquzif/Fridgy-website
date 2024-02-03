@@ -1,6 +1,6 @@
 import {Box, Card, CardActions, CardContent, CardMedia, IconButton, Tooltip, Typography} from "@mui/material";
 import styled from "styled-components";
-import {Delete, Edit, Favorite, FavoriteBorder, Visibility} from "@mui/icons-material";
+import {CheckCircle, Delete, Edit, Favorite, FavoriteBorder, Visibility} from "@mui/icons-material";
 
 import fatImage from '@/Assets/fat.png';
 import carbsImage from '@/Assets/carbs.png';
@@ -57,7 +57,9 @@ const CardStats = (
 const RecipeCard = (
     {
         data,
-        onReload
+        onReload,
+        selectMode=false,
+        onSelect
     }
 ) => {
     //https://picsum.photos/200/300
@@ -90,7 +92,13 @@ const RecipeCard = (
 
     const navigate = useNavigate();
 
-    return <Container sx={{ display: 'flex',flexDirection: 'column' }}>
+    return <Container sx={{ display: 'flex',flexDirection: 'column' }}
+        onClick={() => {
+            if(selectMode){
+                onSelect(data);
+            }
+        }}
+    >
         <ConfirmDialog
             title="Usuwanie przepisu"
             open={confirmOpen}
@@ -141,30 +149,33 @@ const RecipeCard = (
                 />
             </div>
         </CardContent>
-        <div style={{display: 'flex',flexDirection: 'row',justifyContent: 'space-between'}} >
-            <CardActions disableSpacing sx={{position: 'relative',top: '-15px'}}>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteBorder />
-                </IconButton>
-                <IconButton
-                    onClick={() => navigate(`/przepisy/${id}`)}
-                    aria-label="share">
-                    <Visibility />
-                </IconButton>
-                <IconButton
-                    onClick={() => navigate(`/przepisy/${id}/edycja`)}
-                    aria-label="share">
-                    <Edit />
-                </IconButton>
-            </CardActions>
-            <CardActions disableSpacing sx={{position: 'relative',top: '-15px'}}>
-                <IconButton
-                    onClick={() => setConfirmOpen(true)}
-                    aria-label="share">
-                    <Delete color={'error'} />
-                </IconButton>
-            </CardActions>
-        </div>
+        {
+            !selectMode && (<div style={{display: 'flex',flexDirection: 'row',justifyContent: 'space-between'}} >
+                <CardActions disableSpacing sx={{position: 'relative',top: '-15px'}}>
+                    <IconButton aria-label="add to favorites">
+                        <FavoriteBorder />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => navigate(`/przepisy/${id}`)}
+                        aria-label="share">
+                        <Visibility />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => navigate(`/przepisy/${id}/edycja`)}
+                        aria-label="share">
+                        <Edit />
+                    </IconButton>
+                </CardActions>
+                <CardActions disableSpacing sx={{position: 'relative',top: '-15px'}}>
+                    <IconButton
+                        onClick={() => setConfirmOpen(true)}
+                        aria-label="share">
+                        <Delete color={'error'} />
+                    </IconButton>
+                </CardActions>
+            </div>)
+        }
+
     </Container>
 
 }

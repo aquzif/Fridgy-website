@@ -1,12 +1,13 @@
 import RequestUtils from "@/Utils/RequestUtils";
 
 export default class RecipesAPI {
-    static async getAll(page = 1) {
-        return await RequestUtils.apiGet(`/api/recipe?page=${page}`);
+    static async getAll(page = 1,selectedTags,needAllTags) {
+        console.log('REQUESTING PAGE: ' + page);
+        return await RequestUtils.apiGet(`/api/recipe?page=${page}&selectedTags=${JSON.stringify(selectedTags)}&needAllTags=${needAllTags}`,);
     }
 
-    static async search(search) {
-        return await RequestUtils.apiGet('/api/product/search?query=' + encodeURI(search));
+    static async search(search,page,selectedTags,needAllTags) {
+        return await RequestUtils.apiGet(`/api/recipe/search?page=${page}&selectedTags=${JSON.stringify(selectedTags)}&needAllTags=${needAllTags}&query=` + encodeURI(search));
     }
 
     static async get(id) {

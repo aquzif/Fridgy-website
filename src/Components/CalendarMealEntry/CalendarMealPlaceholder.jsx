@@ -33,10 +33,11 @@ const MealName = styled.p`
 
 const CalendarMealPlaceholder = (
     {
-        mealName = ''
+        mealName = '',
+        onClick
     }
 ) => {
-    return <Container>
+    return <Container onClick={onClick} >
         <MealName>{mealName}</MealName>
         <Title>Dodaj posiłek</Title>
     </Container>

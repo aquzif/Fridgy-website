@@ -20,6 +20,9 @@ import ProfileView from "@/Views/Dashboard/ProfileView";
 import UserSettingsView from "@/Views/Dashboard/UserSettingsView";
 import BarcodeScannerView from "@/Views/Dashboard/BarcodeScannerView";
 import BarcodeResultsView from "@/Views/Dashboard/BarcodeResultsView";
+import FastFoodsView from "@/Views/Dashboard/FastFoodsView";
+import FastFoodEditView from "@/Views/Dashboard/FastFoodEditView";
+import FastFoodView from "@/Views/Dashboard/FastFoodView";
 
 const Router = () => {
 
@@ -61,6 +64,9 @@ const Router = () => {
                                 <Route path="/skaner/:barcode" element={<BarcodeResultsView />} />
                                 <Route path="/skaner" element={<BarcodeScannerView />} />
                                 <Route path="/admin/ustawienia" element={<SettingsView />} />
+                                <Route path="/fast-food/:id/edit" element={<FastFoodEditView />} />
+                                <Route path="/fast-food/:id" element={<FastFoodView />} />
+                                <Route path="/fast-food" element={<FastFoodsView />} />
                                 <Route path="*" element={<NotFoundView />} />
                             </Route>
 

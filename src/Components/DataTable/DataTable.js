@@ -47,6 +47,8 @@ const DataTable = ({
     title='',
     emptyMessage='Brak danych',
     isLoading=false,
+    collapsible=false,
+    collapsibleContent= () => {},
     titleMinWidth='100px',
     searchBar=false,
     onRowClick=() => {},
@@ -160,6 +162,7 @@ const DataTable = ({
                         aria-labelledby="tableTitle"
                     >
                         <DataTableHeader
+                            collapsible={collapsible}
                             columns={columns}
                             order={order}
                             orderBy={orderBy}
@@ -172,6 +175,8 @@ const DataTable = ({
                             useInlineActions={inlineTools.length > 0}
                         />
                        <DataTableBody
+                            collapsible={collapsible}
+                            collapsibleContent={collapsibleContent}
                             columns={columns}
                             selected={selected}
                             emptyMessage={emptyMessage}

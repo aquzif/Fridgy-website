@@ -13,7 +13,7 @@ const Multiselector =
         onChange = () => {},
         renderTags = (value, getTagProps) =>
             value.map((option, index) => (
-                <Chip variant="outlined" label={option} {...getTagProps({ index })}
+                <Chip  variant="outlined" label={option} {...getTagProps({ index })}
                       sx={{
                           backgroundColor: '#FACC2C',
                       }}

@@ -9,6 +9,7 @@ const Container = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
+  background-color: white;
   
   &:hover {
     cursor: pointer;
@@ -41,9 +42,10 @@ const RecipeName = styled.p`
 
 
 
-const CalendarMealRecipe = ({meal,mealName}) => {
+const CalendarMealRecipe = ({meal,mealName,onClick}) => {
 
     return <Container
+        onClick={onClick}
         style={{backgroundImage: `url(${NetworkUtils.fixBackendUrl(meal.recipe.image)})`}}
     >
         <MealName>

@@ -285,6 +285,7 @@ const RecipeEditView = () => {
     console.log('TAGS',formik.values.tags);
 
     return <Container>
+
         <LongTextEditDialog
             open={stepDialogOpen}
             onReject={longTextDialogCancel}
@@ -385,6 +386,7 @@ const RecipeEditView = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Multiselector
+                                    title={'Tagi'}
                                     options={recipeTags}
                                     renderTags={(value, getTagProps) =>
                                         value.map((option, index) => (

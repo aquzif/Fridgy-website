@@ -2,6 +2,7 @@ import {Box, Checkbox, TableCell, TableHead, TableRow, TableSortLabel} from "@mu
 
 const DataTableHeader = ({
     columns,
+    collapsible,
     numSelected,
     rowCount,
     order,
@@ -14,6 +15,9 @@ const DataTableHeader = ({
 
     return <TableHead>
         <TableRow>
+            {
+                collapsible && <TableCell />
+            }
             {
                 canSelect && <TableCell padding="checkbox">
                     <Checkbox

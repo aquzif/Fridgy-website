@@ -25,6 +25,7 @@ const LongTextEditDialog = (
 
     const [editValue,setEditValue] = useState(startText);
 
+
     useEffect(() => {
         setEditValue(startText);
     },[startText,open]);
