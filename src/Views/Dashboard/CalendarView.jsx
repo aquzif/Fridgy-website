@@ -49,6 +49,11 @@ const DatesContainer = styled.div`
   background-color: #fdf7ee;
   border-radius: 10px;
   padding: 20px;
+  
+    @media (max-width: 768px) {
+      width: 100%;
+      padding: 0px;
+    }
 
 `;
 

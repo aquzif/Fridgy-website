@@ -24,10 +24,15 @@ import FastFoodMealSetMealCEDialog from "@/Dialogs/FastFoodMealSetMealCEDialog";
 
 const Image = styled.img`
     width: 100%;
-    height: 100%;
+    height: auto;
+  max-width:  400px;
     object-fit: cover;
     border-radius: 10px;
     border: 2px solid #e0e0e0;
+  display: block;
+  margin-left: auto;
+    margin-right: auto;
+    
   
   
     &:hover{
@@ -153,8 +158,6 @@ const FastFoodEditView = () => {
             toast.error('Nie udało się załadować produktów');
             return;
         }
-
-        console.log('ASDASDASD',data.data);
 
         setFastFoodSets(data.data);
 
@@ -297,37 +300,47 @@ const FastFoodEditView = () => {
                     <Tab label="Zestawy"  />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={tab} index={0}>
-                <input
-                    type="file"
-                    ref={inputFileRef}
-                    onChangeCapture={onFileChangeCapture}
-                    name={'image'}
-                    hidden={true}
-                />
-                <Grid container spacing={8}>
-                    <Grid item xs={12} md={6}>
-                        <Image src={newImage.selected && newImage.url || oldImagePath}
-                               onClick={handleImageClick}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant={'standard'}
-                                    name={'name'}
-                                    label={'Nazwa'}
-                                    value={formik.values.name}
-                                    onChange={formik.handleChange}
-                                    fullWidth
-                                    error={formik.touched.name && Boolean(formik.errors.name)}
-                                    helperText={formik.touched.name && formik.errors.name}
-                                />
+            <CustomTabPanel
+                value={tab}
+                index={0}
+            >
+                <div
+                    style={{
+                        maxWidth: '1000px',
+                        margin: 'auto',
+                    }}
+                >
+                    <input
+                        type="file"
+                        ref={inputFileRef}
+                        onChangeCapture={onFileChangeCapture}
+                        name={'image'}
+                        hidden={true}
+                    />
+                    <Grid container spacing={8}>
+                        <Grid item xs={12} md={6}>
+                            <Image src={newImage.selected && newImage.url || oldImagePath}
+                                   onClick={handleImageClick}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        variant={'standard'}
+                                        name={'name'}
+                                        label={'Nazwa'}
+                                        value={formik.values.name}
+                                        onChange={formik.handleChange}
+                                        fullWidth
+                                        error={formik.touched.name && Boolean(formik.errors.name)}
+                                        helperText={formik.touched.name && formik.errors.name}
+                                    />
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </div>
             </CustomTabPanel>
             <CustomTabPanel value={tab} index={1}>
                 <DataTable
