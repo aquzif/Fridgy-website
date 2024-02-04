@@ -6,7 +6,6 @@ import {useNavigate} from "react-router-dom";
 import {Container} from "@/Components/Common/Common"; // ES6
 
 const ScannerContainer = styled.div`
-
     & video {
       width: 100%;
     }
