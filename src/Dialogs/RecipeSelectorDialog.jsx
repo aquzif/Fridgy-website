@@ -180,7 +180,7 @@ const RecipeSelectorDialog = (
                 <Grid container spacing={2}>
                     {
                         recipes.map((recipe) => {
-                            return <Grid item xs={12} md={6} lg={3} xl={2} key={recipe.id}>
+                            return <Grid item xs={12} md={6} lg={3} xl={3} key={recipe.id}>
                                 <RecipeCard
                                     onReload={() => load(true)}
                                     data={recipe}
