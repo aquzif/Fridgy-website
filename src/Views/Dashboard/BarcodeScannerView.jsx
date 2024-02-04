@@ -29,10 +29,29 @@ const BarcodeScannerView = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        init();
+    });
+
+    const init = async () => {
+        let backCameraList = [];
+        let devices = await navigator.mediaDevices.enumerateDevices();
+
+        devices.forEach((device) => {
+            if ( device.kind === 'videoinput' && device.label.match(/back/) != null )
+                backCameraList.push({'deviceLabel': device.label, 'deviceId': device.deviceId});
+        });
+
         Quagga.init({
             inputStream : {
                 name : "Live",
                 type : "LiveStream",
+                constraints: {
+                    width: 640,
+                    height:  480,
+                    deviceId: backCameraList[backCameraList.length - 1]['deviceId']
+                },
+                frequency: 10,
+                singleChannel: true,
                 target: document.querySelector('#scanner')    // Or '#yourElement' (optional)
             },
             decoder : {
@@ -54,8 +73,7 @@ const BarcodeScannerView = () => {
             })
 
         });
-
-    });
+    }
 
     return (
         <Container>
