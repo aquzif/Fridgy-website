@@ -2,7 +2,7 @@ import {Container} from "@/Components/Common/Common";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
-import {LinearProgress, useMediaQuery} from "@mui/material";
+import {IconButton, LinearProgress, Tooltip, useMediaQuery} from "@mui/material";
 import Box from "@mui/material/Box";
 import CalendarEntriesAPI from "@/API/CalendarEntriesAPI";
 import toast from "react-hot-toast";
@@ -20,6 +20,9 @@ import {Swiper, SwiperSlide} from "swiper/react";
 
 import "swiper/css";
 import {useNavigate} from "react-router-dom";
+import {InsertDriveFile} from "@mui/icons-material";
+import ShoppingListSelectDialog from "@/Dialogs/ShoppingListSelectDialog";
+import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 
 const DateContainer = styled.div`
   display: inline-block;
@@ -124,6 +127,8 @@ const CalendarView = () => {
     const [selectedSource,setSelectedSource] = useState(null);
     const [selectedEditData,setSelectedEditData] = useState(null);
 
+    const [selsectedListIdOpen,setSelectedListIdOpen] = useState(false);
+
 
     const user = useSelector(state => state.authReducer.user);
 
@@ -208,6 +213,23 @@ const CalendarView = () => {
     });
 
     return <Container>
+        <ShoppingListSelectDialog
+        open={selsectedListIdOpen}
+        onClose={(res) => {
+            console.log(res);
+            if(res > 0 ) {
+                toast.promise(
+                    ShoppingListsAPI.generateFromCalendar(res, dateFrom.format('YYYY-MM-DD'), dateTo.format('YYYY-MM-DD')),
+                    {
+                        loading: 'Generowanie listy zakupów...',
+                        success: 'Pomyślnie wygenerowano listę zakupów',
+                        error: 'Nie udało się wygenerować listy zakupów'
+                    }
+                )
+            }
+            setSelectedListIdOpen(false);
+        }}
+        />
         <SourceSelectDialog
             open={openSourceSelectDialog}
             onClose={() => setOpenSourceSelectDialog(false)}
@@ -226,7 +248,23 @@ const CalendarView = () => {
             flexDirection: 'row',
             justifyContent: 'space-between'
         } || {}} >
-            <h2>Kalendarz</h2>
+            <div style={
+                isMobile && {
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                } || {}
+
+            } >
+                <h2>Kalendarz</h2>
+                <Tooltip title="Wrzuć do listy zakupów">
+                    <IconButton onClick={() =>{
+                        setSelectedListIdOpen(true);
+                    }} disabled={isLoading} >
+                        <InsertDriveFile />
+                    </IconButton>
+                </Tooltip>
+            </div>
             <div style={isMobile && {
                 display: 'flex',
                 flexDirection: 'row',
