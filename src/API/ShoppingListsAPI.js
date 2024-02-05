@@ -10,8 +10,8 @@ export default class ShoppingListsAPI {
         return await RequestUtils.apiGet('/api/shopping-list/' + id);
     }
 
-    static async generateFromCalendar(listId, date_from,date_to) {
-        return await RequestUtils.apiPost(`/api/shopping-list/${listId}/insertCalendarEntries`, {date_from, date_to});
+    static async generateFromCalendar(listId, date_from,date_to,entries_ids) {
+        return await RequestUtils.apiPost(`/api/shopping-list/${listId}/insertCalendarEntries`, {date_from, date_to,entries_ids});
     }
 
     static async create(data) {

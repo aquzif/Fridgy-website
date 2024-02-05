@@ -2,7 +2,7 @@ import {Container} from "@/Components/Common/Common";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
-import {IconButton, LinearProgress, Tooltip, useMediaQuery} from "@mui/material";
+import {IconButton, LinearProgress, Select, Tooltip, useMediaQuery} from "@mui/material";
 import Box from "@mui/material/Box";
 import CalendarEntriesAPI from "@/API/CalendarEntriesAPI";
 import toast from "react-hot-toast";
@@ -20,7 +20,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 
 import "swiper/css";
 import {useNavigate} from "react-router-dom";
-import {InsertDriveFile} from "@mui/icons-material";
+import {CheckCircle, Description, Edit, InsertDriveFile, Save} from "@mui/icons-material";
 import ShoppingListSelectDialog from "@/Dialogs/ShoppingListSelectDialog";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 
@@ -68,7 +68,7 @@ const CustDatePicker = (props) => {
     />
 }
 
-const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit}) => {
+const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit,selectMode, onCheck}) => {
 
     const navigate = useNavigate();
 
@@ -78,9 +78,12 @@ const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit}) => {
                 case "from_recipe":
                     return <CalendarMealRecipe
                         meal={meal}
+                        selectMode={selectMode}
                         mealName={title}
                         onClick={() => navigate(`/przepisy/${meal.recipe.id}`)}
-                        onEdit={onEdit} />
+                        onEdit={onEdit}
+                        onCheck={onCheck}
+                    />
                 default:
                     return 'ERROR';
             }
@@ -128,6 +131,20 @@ const CalendarView = () => {
     const [selectedEditData,setSelectedEditData] = useState(null);
 
     const [selsectedListIdOpen,setSelectedListIdOpen] = useState(false);
+    const [selectMode,setSelectMode] = useState(false);
+
+
+    const handleSelectEntry = (id) => {
+        let newEntries = entries;
+
+        for(let entry of newEntries){
+            if(entry.id === id){
+                entry.selected = !entry.selected;
+            }
+        }
+
+        setEntries(newEntries);
+    }
 
 
     const user = useSelector(state => state.authReducer.user);
@@ -191,7 +208,9 @@ const CalendarView = () => {
             {
                 mealTitles(user?.meals_per_day|| 1).map((title,index) =>
                     <GetMealFromData
+                        selectMode={selectMode}
                         date={date}
+                        onCheck={(id) => handleSelectEntry(id)}
                         mealNo={index}
                         meals={entries}
                         title={title}
@@ -218,8 +237,16 @@ const CalendarView = () => {
         onClose={(res) => {
             console.log(res);
             if(res > 0 ) {
+
+                let entriesIds;
+                console.log('ENT',entries);
+                if(selectMode)
+                    entriesIds = entries.filter((entry) => entry.selected).map((entry) => entry.id);
+                else
+                    entriesIds = entries.map((entry) => entry.id);
+
                 toast.promise(
-                    ShoppingListsAPI.generateFromCalendar(res, dateFrom.format('YYYY-MM-DD'), dateTo.format('YYYY-MM-DD')),
+                    ShoppingListsAPI.generateFromCalendar(res, dateFrom.format('YYYY-MM-DD'), dateTo.format('YYYY-MM-DD'),entriesIds),
                     {
                         loading: 'Generowanie listy zakupów...',
                         success: 'Pomyślnie wygenerowano listę zakupów',
@@ -257,13 +284,28 @@ const CalendarView = () => {
 
             } >
                 <h2>Kalendarz</h2>
-                <Tooltip title="Wrzuć do listy zakupów">
-                    <IconButton onClick={() =>{
-                        setSelectedListIdOpen(true);
-                    }} disabled={isLoading} >
-                        <InsertDriveFile />
-                    </IconButton>
-                </Tooltip>
+                <div style={{display: 'flex',flexDirection: 'row'}} >
+                    <Tooltip title="Przełącz tryb zaznaczania">
+                        <IconButton onClick={() =>{
+                            setSelectMode(!selectMode);
+                        }} disabled={isLoading} >
+                            {
+                                selectMode ? <Save /> : <CheckCircle />
+                            }
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={
+                        selectMode ? 'Generuj listę zakupów z wybranych posiłków' : 'Generuj listę zakupów z wybranych dni'
+                    }>
+                        <IconButton onClick={() =>{
+                            setSelectedListIdOpen(true);
+                        }} disabled={isLoading} >
+                            {
+                                selectMode ? <InsertDriveFile /> : <Description />
+                            }
+                        </IconButton>
+                    </Tooltip>
+                </div>
             </div>
             <div style={isMobile && {
                 display: 'flex',

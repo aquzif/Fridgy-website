@@ -71,6 +71,7 @@ const ShoppingListSelectDialog = (
                                     <MenuItem key={list.id} value={list.id}>{list.name}</MenuItem>
                                 ))
                             }
+                            <MenuItem value={0}>Wybierz listę</MenuItem>
                         </Select>
                     </FormControl>
                 </DialogContentText>

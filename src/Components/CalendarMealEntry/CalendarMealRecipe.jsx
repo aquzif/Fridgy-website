@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import NetworkUtils from "@/Utils/NetworkUtils";
-import {IconButton} from "@mui/material";
+import {Checkbox, IconButton} from "@mui/material";
 import {Edit} from "@mui/icons-material";
 
 const Container = styled.div`
@@ -51,10 +51,14 @@ position: absolute;
 `;
 
 
-const CalendarMealRecipe = ({meal,mealName,onClick, onEdit}) => {
+const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck}) => {
 
     const handleClick = (e) => {
-        if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'svg' && e.target.tagName !== 'path'){
+        if(e.target.tagName !== 'BUTTON'
+            && e.target.tagName !== 'svg'
+            && e.target.tagName !== 'path'
+            && e.target.tagName !== 'INPUT'
+        ){
             onClick();
         }
     }
@@ -70,9 +74,18 @@ const CalendarMealRecipe = ({meal,mealName,onClick, onEdit}) => {
             {meal.recipe.name}
         </RecipeName>
         <RecipeEditButton >
-            <IconButton onClick={onEdit} >
-                <Edit sx={{color: 'white'}} />
-            </IconButton>
+            {
+                selectMode ?
+                    <Checkbox
+                        sx={{color: 'white'}}
+                        checked={meal.selected}
+                        onChange={(e) => onCheck(meal.id)}
+
+                    /> : <IconButton onClick={onEdit} >
+                    <Edit sx={{color: 'white'}} />
+                </IconButton>
+            }
+
         </RecipeEditButton>
     </Container>
 }

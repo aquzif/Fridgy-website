@@ -3,7 +3,7 @@ import RequestUtils from "@/Utils/RequestUtils";
 export default class CalendarEntriesAPI {
 
     static async getAll(dateFrom,dateTo) {
-        return await RequestUtils.apiGet(`/api/calendar-entry?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+        return await RequestUtils.apiGet(`/api/calendar-entry?date_from=${dateFrom}&date_to=${dateTo}`);
     }
 
     static async get(id) {
