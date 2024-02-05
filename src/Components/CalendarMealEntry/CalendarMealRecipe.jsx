@@ -2,6 +2,7 @@ import styled from "styled-components";
 import NetworkUtils from "@/Utils/NetworkUtils";
 import {Checkbox, IconButton} from "@mui/material";
 import {Edit} from "@mui/icons-material";
+import placeholderImage from "@/Assets/placeholder.png";
 
 const Container = styled.div`
   height: 160px;
@@ -65,7 +66,7 @@ const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck})
 
     return <Container
         onClick={handleClick}
-        style={{backgroundImage: `url(${NetworkUtils.fixBackendUrl(meal.recipe.image)})`}}
+        style={{backgroundImage: `url(${NetworkUtils.fixBackendUrl(meal?.recipe?.image) || placeholderImage })`}}
     >
         <MealName>
             {mealName}
