@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
   border: 3px dashed #e1e0e0;
-  height: 160px;
+  height: 154px;
   margin-bottom: 20px;
   border-radius: 20px;
   background-color: white;
