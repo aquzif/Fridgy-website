@@ -5,7 +5,7 @@ const ProductSchema = Yup.object().shape({
     name: Yup.string().required('Pole wymangane')
         .trim()
         .min(3, 'Nazwa musi mieć minimum 3 znaki')
-        .max(30, 'Nazwa może mieć maksymalnie 30 znaków'),
+        .max(50, 'Nazwa może mieć maksymalnie 50 znaków'),
     nutrition_energy_kcal: Yup.number().required('Pole wymangane')
         .min(0, 'Wartość nie może być ujemna')
         .max(10000, 'Wartość nie może być większa niż 10000'),
