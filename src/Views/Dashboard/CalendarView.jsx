@@ -25,12 +25,14 @@ import ShoppingListSelectDialog from "@/Dialogs/ShoppingListSelectDialog";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 
 const DateContainer = styled.div`
-  display: inline-block;
+  
   width: 300px;
   background-color: white;
   margin: 10px;
   padding: 20px;
   border-radius: 10px;
+  position: relative;
+  flex: 0 0 auto;
   
   
     @media (max-width: 768px) {
@@ -46,7 +48,9 @@ const Title = styled.p`
 `;
 
 const DatesContainer = styled.div`
-  
+  display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
   overflow-y: hidden;
   white-space: nowrap;
   width: calc(100% - 40px);
