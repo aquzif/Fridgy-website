@@ -25,7 +25,7 @@ export default class ShoppingListEntriesAPI {
 
     static async check(shoppingListId, id,newStatus) {
         return await RequestUtils.apiPut('/api/shopping-list/' + shoppingListId + '/entry/' + id + '/check',{
-            checked: newStatus
+            checked: newStatus ? '1' : '0'
         });
     }
 
