@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import NetworkUtils from "@/Utils/NetworkUtils";
 import {Checkbox, IconButton} from "@mui/material";
-import {Edit} from "@mui/icons-material";
+import {DeleteForever, Edit} from "@mui/icons-material";
 import placeholderImage from "@/Assets/placeholder.png";
 
 const Container = styled.div`
@@ -46,13 +46,21 @@ const RecipeName = styled.p`
 const RecipeEditButton = styled.div`
 position: absolute;
   top: -6px;
+  right: 24px;
+  padding: 5px;
+  
+`;
+
+const RecipeDeleteButton = styled.div`
+  position: absolute;
+  top: -6px;
   right: -6px;
   padding: 5px;
   
 `;
 
 
-const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck}) => {
+const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck, onDelete}) => {
 
     const handleClick = (e) => {
         if(e.target.tagName !== 'BUTTON'
@@ -76,18 +84,29 @@ const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck})
         </RecipeName>
         <RecipeEditButton >
             {
-                selectMode ?
-                    <Checkbox
-                        sx={{color: 'white'}}
-                        checked={meal.selected}
-                        onChange={(e) => onCheck(meal.id)}
+                !selectMode &&
+                     <IconButton onClick={onEdit} >
+                            <Edit sx={{color: '#FACC2C', backgroundColor: 'white',borderRadius: '22px',padding: '2px'}} />
+                        </IconButton>
 
-                    /> : <IconButton onClick={onEdit} >
-                    <Edit sx={{color: 'white'}} />
-                </IconButton>
             }
 
         </RecipeEditButton>
+        <RecipeDeleteButton>
+        {
+            selectMode ? <Checkbox
+                sx={{color: '#FACC2C'}}
+                checked={meal.selected}
+                onChange={(e) => onCheck(meal.id)}
+
+            /> :
+                <IconButton onClick={() => {
+                    onDelete(meal.id);
+                }} >
+                    <DeleteForever  sx={{color: 'red', backgroundColor: 'white',borderRadius: '22px',padding: '2px'}} />
+                </IconButton>
+        }
+        </RecipeDeleteButton>
     </Container>
 }
 

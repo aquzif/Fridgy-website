@@ -23,6 +23,7 @@ import {useNavigate} from "react-router-dom";
 import {CheckCircle, Description, Edit, InsertDriveFile, Save} from "@mui/icons-material";
 import ShoppingListSelectDialog from "@/Dialogs/ShoppingListSelectDialog";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
+import ConfirmDialog from "@/Dialogs/ConfirmDialog";
 
 const DateContainer = styled.div`
   
@@ -72,7 +73,7 @@ const CustDatePicker = (props) => {
     />
 }
 
-const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit,selectMode, onCheck}) => {
+const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit,selectMode, onCheck, onDelete}) => {
 
     const navigate = useNavigate();
 
@@ -82,6 +83,7 @@ const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit,selectMode, o
                 case "from_recipe":
                     return <CalendarMealRecipe
                         meal={meal}
+                        onDelete={onDelete}
                         selectMode={selectMode}
                         mealName={title}
                         onClick={() => navigate(`/przepisy/${meal.recipe.id}`)}
@@ -136,6 +138,8 @@ const CalendarView = () => {
 
     const [selsectedListIdOpen,setSelectedListIdOpen] = useState(false);
     const [selectMode,setSelectMode] = useState(false);
+
+    const [deleteConfirmId,setDeleteConfirmId] = useState(0);
 
 
     const handleSelectEntry = (id) => {
@@ -213,6 +217,7 @@ const CalendarView = () => {
                 mealTitles(user?.meals_per_day|| 1).map((title,index) =>
                     <GetMealFromData
                         selectMode={selectMode}
+                        onDelete={(id) => setDeleteConfirmId(id)}
                         date={date}
                         onCheck={(id) => handleSelectEntry(id)}
                         mealNo={index}
@@ -236,6 +241,24 @@ const CalendarView = () => {
     });
 
     return <Container>
+        <ConfirmDialog
+            title="Usuwanie wpisu"
+            subtitle={`Czy na pewno chcesz usunąć wpis "${entries.find((entry) => entry.id === deleteConfirmId)?.recipe?.name}"?`}
+            open={deleteConfirmId > 0}
+            onClose={(res) => {
+                if(res){
+                    toast.promise(
+                        CalendarEntriesAPI.delete(deleteConfirmId),
+                        {
+                            loading: 'Usuwanie wpisu...',
+                            success: 'Pomyślnie usunięto wpis',
+                            error: 'Nie udało się usunąć wpisu'
+                        }
+                    ).then(load)
+                }
+                setDeleteConfirmId(0);
+            }}
+        />
         <ShoppingListSelectDialog
         open={selsectedListIdOpen}
         onClose={(res) => {
