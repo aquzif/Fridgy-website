@@ -14,7 +14,7 @@ const ShoppingListEntrySchema = Yup.object().shape({
         is: 'raw_product',
         then: () => Yup.number()
             .required('Pole wymagane')
-            .integer('tylko liczby całkowite')
+            //.integer('tylko liczby całkowite')
             .min(1, 'Wartość musi być większa od 0')
             .max(1000000, 'Nieprawidłowa wartość'),
         otherwise: () => Yup.number().notRequired()
