@@ -123,6 +123,8 @@ const IngredientCEDialog =
     const onProductSelect = (selectedValue) => {
         formik.setFieldValue('product_id', selectedValue?.id || '');
         setSelectedProduct(selectedValue);
+        formik.setFieldValue('amount_in_unit', 1);
+        formik.setFieldValue('product_unit_id', selectedValue?.units[0]?.id || 0);
     }
 
 
