@@ -82,7 +82,7 @@ const RecipeView = () => {
         setIsLoading(false);
     }
 
-    let porMulti = (showPerPortion / recipe?.serving_amount || 1);
+    let porMulti = (showPerPortion || 1);
 
     const topData = [
         {
@@ -198,7 +198,6 @@ const RecipeView = () => {
                 />
             </Grid>
         </Grid>
-
     </Container>
 }
 
