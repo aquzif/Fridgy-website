@@ -20,6 +20,7 @@ import Multiselector from "@/Components/Multiselector/Multiselector";
 import {useSelector} from "react-redux";
 import recipeTagsReducer, {requestRecipeTags} from "@/Store/Reducers/RecipeTagsReducer";
 import store from "@/Store/store";
+import RecipeIngredientsAPI from "@/API/RecipeIngredientsAPI";
 
 const Container = styled.div`
   width: calc(100% - 100px);
@@ -251,8 +252,14 @@ const RecipeEditView = () => {
             'name': 'delete',
             'label': 'Usuń',
             'icon': <Delete color={'error'} />,
-            'onClick': async () => {
-
+            'onClick': async ({id: rowId}) => {
+                toast.promise(RecipeIngredientsAPI.delete(id,rowId),{
+                    loading: 'usuwania składnika...',
+                    success: 'Składnik został usunięty',
+                    error: 'Nie udało się usunąć składnika'
+                }).then(() => {
+                    load();
+                });
             }
         }
     ];

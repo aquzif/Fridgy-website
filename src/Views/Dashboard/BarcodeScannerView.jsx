@@ -3,7 +3,8 @@ import {useEffect, useState} from "react";
 import styled from "styled-components";
 import OpenFoodFactsAPI from "@/API/OpenFoodFactsAPI";
 import {useNavigate} from "react-router-dom";
-import {Container} from "@/Components/Common/Common"; // ES6
+import {Container} from "@/Components/Common/Common";
+import {useMediaQuery} from "@mui/material"; // ES6
 
 const ScannerContainer = styled.div`
     & video {
@@ -26,18 +27,25 @@ const Title = styled.h2`
 const BarcodeScannerView = () => {
 
     const navigate = useNavigate();
+    const isMobile = useMediaQuery('(max-width: 600px)');
 
     useEffect(() => {
-        init();
-    });
+        init()
+        .catch(e => {
+            alert(e.message);
+        });
+    },[]);
 
     const init = async () => {
         let backCameraList = [];
         let devices = await navigator.mediaDevices.enumerateDevices();
 
         devices.forEach((device) => {
-            if ( device.kind === 'videoinput' && device.label.match(/back/) != null )
+            if ( device.kind === 'videoinput'
+                && ((isMobile && device.label.match(/back/) != null ) || !isMobile)
+            ){
                 backCameraList.push({'deviceLabel': device.label, 'deviceId': device.deviceId});
+            }
         });
 
         Quagga.init({

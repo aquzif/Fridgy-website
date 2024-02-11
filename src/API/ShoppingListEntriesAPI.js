@@ -22,7 +22,7 @@ export default class ShoppingListEntriesAPI {
     static async delete(shoppingListId, id) {
         return await RequestUtils.apiDelete('/api/shopping-list/' + shoppingListId + '/entry/' + id);
     }
-    
+
 
     static async check(shoppingListId, id,newStatus) {
         return await RequestUtils.apiPut('/api/shopping-list/' + shoppingListId + '/entry/' + id + '/check',{
