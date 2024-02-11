@@ -184,7 +184,7 @@ const RecipeView = () => {
                                     product_name: `${ingredient.product.name} `,
                                     amount: Math.fround(ingredient.amount_in_unit * (porMulti / recipe?.serving_amount)),
                                     unit_name: <>
-                                        {ingredient.unit.name} ({Math.fround(ingredient.amount_in_grams)*porMulti}g) <br /> (<b>{Math.round(ingredient.calories * porMulti)}</b> kcal)</>
+                                        {ingredient.unit.name} ({Math.fround(ingredient.amount_in_grams)*(porMulti / recipe?.serving_amount)}g) <br /> (<b>{Math.round(ingredient.calories * (porMulti / recipe?.serving_amount))}</b> kcal)</>
                                 }} />
                             </div>
                         ))
