@@ -22,7 +22,7 @@ const ListContainer = styled.div`
 
 const FastFoodView = (
     {
-
+        selectable = false,
     }
 ) => {
 

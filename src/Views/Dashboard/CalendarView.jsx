@@ -24,6 +24,10 @@ import {CheckCircle, Description, Edit, InsertDriveFile, Save} from "@mui/icons-
 import ShoppingListSelectDialog from "@/Dialogs/ShoppingListSelectDialog";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import ConfirmDialog from "@/Dialogs/ConfirmDialog";
+import CalendarFastFoodRecipe from "@/Components/CalendarMealEntry/CalendarFastFoodRecipe";
+import CalendarEntryFromFastFoodCEDialog from "@/Dialogs/CalendarEntryFromFastFoodCEDialog";
+import CalendarEntryFastFoodAPI from "@/API/CalendarEntryFastFoodAPI";
+import FastFoodEntryViewDialog from "@/Dialogs/FastFoodEntryViewDialog";
 
 const DateContainer = styled.div`
   
@@ -90,6 +94,17 @@ const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit,selectMode, o
                         onEdit={onEdit}
                         onCheck={onCheck}
                     />
+                case "from_fast_food_store":{
+                    return <CalendarFastFoodRecipe
+                        meal={meal}
+                        onDelete={onDelete}
+                        selectMode={selectMode}
+                        mealName={title}
+                        onClick={() => onClick(meal.id)}
+                        onEdit={onEdit}
+                        onCheck={onCheck}
+                    />
+                }
                 default:
                     return 'ERROR';
             }
@@ -135,6 +150,7 @@ const CalendarView = () => {
     const [openSourceSelectDialog,setOpenSourceSelectDialog] = useState(false);
     const [selectedSource,setSelectedSource] = useState(null);
     const [selectedEditData,setSelectedEditData] = useState(null);
+    const [selectedViewId,setSelectedViewId] = useState(null);
 
     const [selsectedListIdOpen,setSelectedListIdOpen] = useState(false);
     const [selectMode,setSelectMode] = useState(false);
@@ -223,8 +239,8 @@ const CalendarView = () => {
                         mealNo={index}
                         meals={entries}
                         title={title}
-                        onClick={() => {
-
+                        onClick={(id) => {
+                            setSelectedViewId(id)
                         }}
                         onEdit={ () => {
                             setOpenSourceSelectDialog(true);
@@ -239,6 +255,39 @@ const CalendarView = () => {
             }
         </DateContainer>
     });
+
+    const selectFastFood = async (fastFood) => {
+
+        if(fastFood.meals.length === 0){
+            handleCloseSourceInputDialog();
+            return;
+        }
+
+        let result = await toast.promise(CalendarEntriesAPI.create({
+            "type" :"from_fast_food_store",
+            "date": selectedEditData.date,
+            "meal_order": selectedEditData.mealNo,
+            "fast_food_store_id": fastFood.id
+        }),{
+            loading: 'Dodawanie przepisu...',
+            success: 'Pomyślnie dodano przepis',
+            error: 'Nie udało się dodać przepisu'
+        });
+
+        const entryId = result.data.data.id;
+        for(let meal of fastFood.meals){
+            console.log('MEAL',meal);
+            await CalendarEntryFastFoodAPI.create(entryId,{
+                fast_food_meal_id: meal.id,
+                quantity: meal.quantity
+            });
+        }
+        toast.success('Pomyślnie dodano produkty');
+
+        handleCloseSourceInputDialog();
+        load();
+
+    }
 
     return <Container>
         <ConfirmDialog
@@ -291,6 +340,17 @@ const CalendarView = () => {
                 setOpenSourceSelectDialog(false);
                 setSelectedSource(source)
             }}
+        />
+        <CalendarEntryFromFastFoodCEDialog
+            open={selectedSource === 'fastfood'}
+            onClose={handleCloseSourceInputDialog}
+            onSelect={selectFastFood}
+        />
+        <FastFoodEntryViewDialog
+            open={ selectedViewId !== null}
+            onClose={handleCloseSourceInputDialog}
+            id={selectedViewId}
+            onClose={() => setSelectedViewId(null)}
         />
         <RecipeSelectorDialog
             open={selectedSource === 'recipe'}

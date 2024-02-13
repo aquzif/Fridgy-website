@@ -12,7 +12,7 @@ export default class ProductUnitsAPI {
     static async create(productId,data) {
         const result = await RequestUtils.apiPost(`/api/product/${productId}/unit`, data);
 
-        if(result.status !== 201){
+        if(result.status >= 300){
             throw new Error('ProductUnitsAPI.create() failed, status: ' + result.status);
         }
 
