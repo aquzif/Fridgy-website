@@ -94,6 +94,7 @@ const FastFoodMealCEDialog = (
             name: data.data.name,
             category: data.data.category,
             calories_per_100g: data.data.calories_per_100g,
+            calories_per_ration: (data.data.calories_per_100g/100) * data.data.weight_in_grams,
             weight_in_grams: data.data.weight_in_grams,
             image: {
                 url: data.data.image || '',
@@ -124,6 +125,7 @@ const FastFoodMealCEDialog = (
             name: '',
             category: '',
             calories_per_100g: 0,
+            calories_per_ration: 0,
             weight_in_grams: 0,
             image: {}
         },
@@ -169,6 +171,37 @@ const FastFoodMealCEDialog = (
 
         }
     });
+
+    const handleChangeForFormik = (e) => {
+        console.log(e.target.name,e.target.value);
+        switch(e.target.name){
+            case 'calories_per_100g':{
+                formik.setFieldValue('calories_per_100g', e.target.value);
+                if(formik.values.weight_in_grams > 0){
+                    formik.setFieldValue('calories_per_ration', Math.round((e.target.value/100) * formik.values.weight_in_grams));
+                }
+                break;
+            }
+            case 'weight_in_grams':{
+                formik.setFieldValue('weight_in_grams', e.target.value);
+                if(formik.values.calories_per_100g > 0){
+                    formik.setFieldValue('calories_per_ration',
+                        Math.round((formik.values.calories_per_100g/100) * e.target.value)
+                    );
+                }
+                break;
+            }
+            case 'calories_per_ration':{
+                formik.setFieldValue('calories_per_ration', e.target.value);
+                if(formik.values.calories_per_100g > 0){
+                    formik.setFieldValue('weight_in_grams',
+                        Math.round((e.target.value/(formik.values.calories_per_100g/100)))
+                        );
+                }
+                break;
+            }
+        }
+    }
 
 
     return  <Dialog
@@ -247,7 +280,7 @@ const FastFoodMealCEDialog = (
                                 name={'calories_per_100g'}
                                 label={'Kalorie na 100g'}
                                 value={formik.values.calories_per_100g}
-                                onChange={formik.handleChange}
+                                onChange={handleChangeForFormik}
                                 fullWidth
                                 error={formik.touched.calories_per_100g && Boolean(formik.errors.calories_per_100g)}
                                 helperText={formik.touched.calories_per_100g && formik.errors.calories_per_100g}
@@ -259,10 +292,22 @@ const FastFoodMealCEDialog = (
                                 name={'weight_in_grams'}
                                 label={'Waga w gramach'}
                                 value={formik.values.weight_in_grams}
-                                onChange={formik.handleChange}
+                                onChange={handleChangeForFormik}
                                 fullWidth
                                 error={formik.touched.weight_in_grams && Boolean(formik.errors.weight_in_grams)}
                                 helperText={formik.touched.weight_in_grams && formik.errors.weight_in_grams}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                variant={'standard'}
+                                name={'calories_per_ration'}
+                                label={'Kalorie na porcję'}
+                                value={formik.values.calories_per_ration}
+                                onChange={handleChangeForFormik}
+                                fullWidth
+                                error={formik.touched.calories_per_ration && Boolean(formik.errors.calories_per_ration)}
+                                helperText={formik.touched.calories_per_ration && formik.errors.calories_per_ration}
                             />
                         </Grid>
                     </Grid>

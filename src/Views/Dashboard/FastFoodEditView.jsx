@@ -43,6 +43,9 @@ const Image = styled.img`
 
 const mealsColumns = [
     {
+        name: 'id',
+        label: 'ID'
+    },{
         name: 'name',
         label: 'Nazwa',
     },{
@@ -65,6 +68,10 @@ const mealsColumns = [
 ];
 
 const setsColumns = [
+    {
+        name: 'id',
+        label: 'ID'
+    },
     {
         name: 'name',
         label: 'Nazwa'
