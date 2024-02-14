@@ -198,7 +198,7 @@ const CalendarEntryFromFastFoodCEDialog = (
     return (
         <Dialog
             open={open}
-            maxWidth={'md'}
+            maxWidth={stage === 0 ? 'md' : 'lg'}
             fullWidth
             onClose={onClose}
         >
