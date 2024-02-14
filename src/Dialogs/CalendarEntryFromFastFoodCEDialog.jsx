@@ -317,7 +317,14 @@ const ItemCard = (
                 fontWeight: 'bold',
                 fontSize: '1.2rem',
             }}
-        >{fastFood.name}</div>
+            >{fastFood.name} {
+            fastFood.calories_per_item ? `(${Math.ceil(fastFood.calories_per_item)} kcal)` : `(${
+                Math.ceil(fastFood.meals.reduce((a,b) => {
+                    return a + b.quantity * b.meal.calories_per_item
+                },0))
+            } kcal)`
+
+        } </div>
         <CardActions>
             <div style={{
                 display: 'flex',
