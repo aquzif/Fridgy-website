@@ -6,6 +6,9 @@ export default class RecipesAPI {
         return await RequestUtils.apiGet(`/api/recipe?page=${page}&selectedTags=${JSON.stringify(selectedTags)}&needAllTags=${needAllTags}`,);
     }
 
+    static async random() {
+        return await RequestUtils.apiGet('/api/recipe/random');
+    }
     static async search(search,page,selectedTags,needAllTags) {
         return await RequestUtils.apiGet(`/api/recipe/search?page=${page}&selectedTags=${JSON.stringify(selectedTags)}&needAllTags=${needAllTags}&query=` + encodeURI(search));
     }

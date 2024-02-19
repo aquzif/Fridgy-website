@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import styled from "styled-components";
 import {useEffect, useState} from "react";
 import RecipesAPI from "@/API/RecipesAPI";
@@ -7,11 +7,12 @@ import NetworkUtils from "@/Utils/NetworkUtils";
 import kcalImage from '@/Assets/kcal.png';
 import foodRationImage from '@/Assets/food_ration.png';
 import timeImage from '@/Assets/time.png';
-import {Grid} from "@mui/material";
+import {Grid, IconButton} from "@mui/material";
 import {EntryRawProductContent} from "@/Components/ShoppingListEntry/ShoppingListEntry";
 import NumberInput from "@/Components/NumberInput/NumberInput";
 import VerticalLinearStepper from "@/Components/RecipeSteps/RecipeSteps";
 import URLUtils from "@/Utils/URLUtils";
+import {Sync} from "@mui/icons-material";
 
 
 const Container = styled.div`
@@ -28,9 +29,31 @@ const TopImage = styled.div`
     height: 300px;
     background-position: center;
     background-repeat: no-repeat;
+  position: relative;
     background-size: cover;
   
     border-radius: 10px;
+`;
+
+const RandButton = styled.div`
+  font-size: 30px;
+  padding: 0;
+  width: fit-content;
+  top: -5px;
+  right: -5px;
+  padding: 10px 10px 10px;
+  border-bottom-left-radius: 40px;
+  position: absolute;
+  background-color: white;
+  max-width: calc(100% - 100px);
+  //@media (max-width: 768px) {
+  //  max-width: calc(100% - 200px);
+  //}
+  
+//hide text overflow in ...
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Title = styled.h1`
@@ -60,9 +83,23 @@ const RecipeView = () => {
     const [isLoading,setIsLoading] = useState(true);
     const [showPerPortion,setShowPerPortion] = useState(1);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         load();
     }, [id]);
+
+
+    const randomRecipe = () => {
+        RecipesAPI.random().then(response => {
+            console.log(response);
+
+            if(response.status >= 300){
+                toast.error('Nie udało się pobrać losowego przepisu');
+            }
+            navigate('/przepisy/'+response.data.data.id);
+        });
+    }
 
     const load = async () => {
         setIsLoading(true);
@@ -106,6 +143,13 @@ const RecipeView = () => {
     return <Container>
         <TopImage style={{backgroundImage: `url(${NetworkUtils.fixBackendUrl(recipe?.image)})` }} >
             <Title>{isLoading ? 'Ładowanie...' : recipe?.name}</Title>
+            <RandButton>
+                <IconButton
+                    onClick={randomRecipe}
+                >
+                    <Sync />
+                </IconButton>
+            </RandButton>
         </TopImage>
 
 
