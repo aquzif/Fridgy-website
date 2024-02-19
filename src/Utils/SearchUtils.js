@@ -11,14 +11,15 @@ export default class SearchUtils{
                 let cell = row[columns[i].name];
 
                 if(typeof cell === 'object'){
-                    cell = cell.props.children;
+
+                    cell = cell?.props?.children ;
                 }
 
                 let searchVal = '';
                 if(columns[i].searchValue){
                     searchVal = columns[i].searchValue(cell);
                 }else{
-                    searchVal = cell?.toString()?.toLowerCase();
+                    searchVal = cell?.toString()?.toLowerCase() || '';
                 }
 
                 if(searchVal === null || searchVal === undefined)
