@@ -75,12 +75,12 @@ jobs:
         run: rsync -e 'ssh -p 22' -avz  ./build/ ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }}:${{ secrets.SSH_DIR_DEV }}
       - name: Replace logo192.png with logo192_dev.png
         run: |
-          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/logo192.jpg"
-          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "cp ${{ secrets.SSH_DIR_DEV }}/logo192_dev.jpg ${{ secrets.SSH_DIR_DEV }}/logo192.jpg"
+          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/logo192.png"
+          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "cp ${{ secrets.SSH_DIR_DEV }}/logo192_dev.png ${{ secrets.SSH_DIR_DEV }}/logo192.png"
       - name: Replace logo512.png with logo512_dev.png
         run: |
-          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/logo512.jpg"
-          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "cp ${{ secrets.SSH_DIR_DEV }}/logo512_dev.jpg ${{ secrets.SSH_DIR_DEV }}/logo512.jpg"
+          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "rm -rf ${{ secrets.SSH_DIR_DEV }}/logo512.png"
+          ssh -p 22 ${{secrets.SSH_USERNAME}}@${{ secrets.SERVER_HOST }} "cp ${{ secrets.SSH_DIR_DEV }}/logo512_dev.png ${{ secrets.SSH_DIR_DEV }}/logo512.png"
 
       - name: Replace favicon.ico with favicon_dev.ico
         run: |
