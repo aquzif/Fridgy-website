@@ -5,6 +5,20 @@ export default class ProductsAPI {
         return await RequestUtils.apiGet(`/api/product`);
     }
 
+    static async getNutrition(name) {
+        const result = await RequestUtils.apiGet(`/api/ai/nutrition?product=${name}`);
+
+        if(result.status >= 300){
+            throw new Error('ProductsAPI.getNutrition() failed, status: ' + result.status);
+        }
+
+        if(result.data.status !== 'FOUND'){
+            throw new Error('ProductsAPI.getNutrition() failed, status: ' + result.data.status);
+        }
+
+        return result.data;
+    }
+
     static async search(search) {
         return await RequestUtils.apiGet('/api/product/search?query=' + encodeURI(search));
     }

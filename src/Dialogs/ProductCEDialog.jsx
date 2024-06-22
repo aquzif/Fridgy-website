@@ -6,7 +6,7 @@ import {
     DialogContentText,
     DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select,
     Grow,
-    TextField
+    TextField, InputAdornment, IconButton
 } from "@mui/material";
 import {forwardRef, useEffect, useRef, useState} from "react";
 import {useFormik} from "formik";
@@ -19,6 +19,7 @@ import {requestProductCategories} from "@/Store/Reducers/ProductCategoryReducer"
 import ProductSchema from "@/Schemas/ProductSchema";
 import {requestProducts} from "@/Store/Reducers/ProductReducer";
 import DataTable from "@/Components/DataTable/DataTable";
+import {Search} from "@mui/icons-material";
 
 
 
@@ -125,6 +126,27 @@ const ProductCEDialog = (
     }, [open,editMode]);
 
 
+    const fetchNutrition = async () => {
+         await toast.promise(ProductAPI.getNutrition(formik.values.name), {
+             loading: 'Pobieranie danych...',
+             success: (res) => {
+                 formik.setValues({
+                        ...formik.values,
+                        nutrition_energy_kcal: res.energy_kcal,
+                        nutrition_energy_kj: res.energy_kj,
+                        nutrition_carbs: res.carbs,
+                        nutrition_fat: res.fat,
+                        nutrition_sugar: res.sugar,
+                        nutrition_protein: res.protein,
+                        nutrition_salt: res.salt,
+
+                 })
+                 return 'Dane zostały pobrane';
+             },
+                error: 'Nie udało się pobrać danych'
+         }).catch((err) => {});
+
+    }
 
     return (
             <Dialog
@@ -151,6 +173,17 @@ const ProductCEDialog = (
                                     fullWidth
                                     error={formik.touched.name && Boolean(formik.errors.name)}
                                     helperText={formik.touched.name && formik.errors.name}
+                                    InputProps={{
+                                        endAdornment: <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="get nutrition data"
+                                                onClick={fetchNutrition}
+                                                edge="end"
+                                            >
+                                                <Search />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={6}>
