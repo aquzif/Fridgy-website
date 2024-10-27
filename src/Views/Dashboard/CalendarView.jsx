@@ -20,7 +20,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 
 import "swiper/css";
 import {useNavigate} from "react-router-dom";
-import {CheckCircle, Description, Edit, InsertDriveFile, Save} from "@mui/icons-material";
+import {CheckCircle, Description, Edit, FitnessCenter, InsertDriveFile, Save} from "@mui/icons-material";
 import ShoppingListSelectDialog from "@/Dialogs/ShoppingListSelectDialog";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import ConfirmDialog from "@/Dialogs/ConfirmDialog";
@@ -28,6 +28,7 @@ import CalendarFastFoodRecipe from "@/Components/CalendarMealEntry/CalendarFastF
 import CalendarEntryFromFastFoodCEDialog from "@/Dialogs/CalendarEntryFromFastFoodCEDialog";
 import CalendarEntryFastFoodAPI from "@/API/CalendarEntryFastFoodAPI";
 import FastFoodEntryViewDialog from "@/Dialogs/FastFoodEntryViewDialog";
+import TrainingsAPI from "@/API/TrainingsAPI";
 
 const DateContainer = styled.div`
   
@@ -145,6 +146,7 @@ const CalendarView = () => {
     const [dateTo, setDateTo] = useState(dayjs().add(7,'day'));
     const [isLoading,setIsLoading] = useState(false);
     const [entries,setEntries] = useState([]);
+    const [trainings,setTrainings] = useState([]);
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     const [openSourceSelectDialog,setOpenSourceSelectDialog] = useState(false);
@@ -178,6 +180,7 @@ const CalendarView = () => {
         store.dispatch(refreshUser());
         let res = await CalendarEntriesAPI.getAll(dateFrom.format('YYYY-MM-DD'), dateTo.format('YYYY-MM-DD'))
 
+        let trainingsRes = await TrainingsAPI.getAll(dateFrom.format('YYYY-MM-DD'), dateTo.format('YYYY-MM-DD'))
         const {data,status} = res;
 
         if(status >300){
@@ -186,6 +189,7 @@ const CalendarView = () => {
         }
 
         setEntries(data.data);
+        setTrainings(trainingsRes.data);
 
         setIsLoading(false);
     }
@@ -217,6 +221,14 @@ const CalendarView = () => {
     }
 
     const columns = DatesUtils.getDatesBetween(dateFrom,dateTo).map((date) => {
+
+        let caloriesFromTrainings = 0;
+        for(let training of trainings){
+            if(date.isSame(training.date,'day')){
+                caloriesFromTrainings += parseInt(training.calories);
+            }
+        }
+
         return <DateContainer
             style={date.isSame(dayjs(),'day') && {
                 backgroundColor: '#f3fff3'
@@ -224,10 +236,21 @@ const CalendarView = () => {
         >
             <h4 style={{textAlign:'center',paddingBottom:'5px'}} >{DatesUtils.getNameOfWeekDay(date)}</h4>
             <p style={{textAlign: 'center'}} >{date.format('DD-MM-YYYY')}</p>
+            <Tooltip title={'Wprowadź trening'} >
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px'
+                    }}
+                >
+                    <FitnessCenter />
+                </IconButton>
+            </Tooltip>
             <DoubleProgress
                 label={'Kalorie:'}
                 val={getCaloriesPerDate(date,entries)}
-                max={Math.round(user?.calories_per_day || 0)}
+                max={Math.round((parseInt(user?.calories_per_day) + caloriesFromTrainings) || 0)}
             />
             {
                 mealTitles(user?.meals_per_day|| 1).map((title,index) =>
@@ -422,7 +445,9 @@ const CalendarView = () => {
             {isMobile ? <Swiper>
                 {
                     columns.map((column) =>
-                        <SwiperSlide>{column}</SwiperSlide>
+                        <SwiperSlide>
+                            {column}
+                        </SwiperSlide>
                     )
                 }
             </Swiper> : columns}
