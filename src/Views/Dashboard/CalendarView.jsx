@@ -2,7 +2,16 @@ import {Container} from "@/Components/Common/Common";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
-import {IconButton, LinearProgress, Select, Tooltip, useMediaQuery} from "@mui/material";
+import {
+    FormControl,
+    IconButton,
+    InputLabel,
+    LinearProgress,
+    MenuItem,
+    Select,
+    Tooltip,
+    useMediaQuery
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import CalendarEntriesAPI from "@/API/CalendarEntriesAPI";
 import toast from "react-hot-toast";
@@ -20,7 +29,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 
 import "swiper/css";
 import {useNavigate} from "react-router-dom";
-import {CheckCircle, Description, Edit, FitnessCenter, InsertDriveFile, Save} from "@mui/icons-material";
+import {CheckCircle, Description, Edit, FitnessCenter, InsertDriveFile, ReadMore, Save} from "@mui/icons-material";
 import ShoppingListSelectDialog from "@/Dialogs/ShoppingListSelectDialog";
 import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 import ConfirmDialog from "@/Dialogs/ConfirmDialog";
@@ -53,6 +62,12 @@ const Title = styled.p`
   
 `;
 
+const MealCategoryTitle = styled.p`
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+`;
+
 const DatesContainer = styled.div`
   display: flex;
     flex-direction: row;
@@ -78,41 +93,60 @@ const CustDatePicker = (props) => {
     />
 }
 
-const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit,selectMode, onCheck, onDelete}) => {
+const GetMealFromData = ({date,mealNo,meals,title, onClick, onEdit,selectMode, onCheck, onDelete, editMode}) => {
 
     const navigate = useNavigate();
 
-    for(let meal of meals){
-        if(date.isSame(meal.date,'day') && meal.meal_order === mealNo){
-            switch(meal.entry_type){
-                case "from_recipe":
-                    return <CalendarMealRecipe
-                        meal={meal}
-                        onDelete={onDelete}
-                        selectMode={selectMode}
-                        mealName={title}
-                        onClick={() => navigate(`/przepisy/${meal.recipe.id}`)}
-                        onEdit={onEdit}
-                        onCheck={onCheck}
-                    />
-                case "from_fast_food_store":{
-                    return <CalendarFastFoodRecipe
-                        meal={meal}
-                        onDelete={onDelete}
-                        selectMode={selectMode}
-                        mealName={title}
-                        onClick={() => onClick(meal.id)}
-                        onEdit={onEdit}
-                        onCheck={onCheck}
-                    />
-                }
-                default:
-                    return 'ERROR';
-            }
+    let filteredMeals = ['title',...meals.filter((meal) => date.isSame(meal.date,'day') && meal.meal_order === mealNo)];
 
+    if(editMode)
+        filteredMeals.push('placeholder');
+
+    return filteredMeals.map(meal => {
+        if(meal === 'title'){
+            return <MealCategoryTitle>{title}</MealCategoryTitle>
         }
-    }
-    return <CalendarMealPlaceholder mealName={title} onClick={onEdit} onEdit={onEdit} />
+        if(meal === 'placeholder'){
+            return <CalendarMealPlaceholder mealName={title} onClick={onEdit} onEdit={onEdit} />
+        }
+        switch(meal.entry_type){
+            case "from_recipe":
+                return <CalendarMealRecipe
+                    meal={meal}
+                    onDelete={onDelete}
+                    selectMode={selectMode}
+                    editMode={editMode}
+                    mealName={title}
+                    selected={meal.selected}
+                    onClick={() => {
+                        if(selectMode){
+                            onCheck(meal.id);
+                            console.log('CHECKED',meal.id,meal);
+                        }
+
+                        else
+                            navigate(`/przepisy/${meal.recipe.id}`);
+
+                    }}
+                    onEdit={onEdit}
+                    onCheck={onCheck}
+                />
+            case "from_fast_food_store":{
+                return <CalendarFastFoodRecipe
+                    meal={meal}
+                    onDelete={onDelete}
+                    selectMode={selectMode}
+                    editMode={editMode}
+                    mealName={title}
+                    onClick={() => onClick(meal.id)}
+                    onEdit={onEdit}
+                    onCheck={onCheck}
+                />
+            }
+            default:
+                return 'ERROR';
+        }
+    });
 }
 
 const mealTitles = (amount) => {
@@ -139,7 +173,6 @@ const getCaloriesPerDate = (date,entries) => {
     }
     return calories;
 }
-
 const CalendarView = () => {
 
     const [dateFrom, setDateFrom] = useState(dayjs());
@@ -155,22 +188,23 @@ const CalendarView = () => {
     const [selectedViewId,setSelectedViewId] = useState(null);
 
     const [selsectedListIdOpen,setSelectedListIdOpen] = useState(false);
-    const [selectMode,setSelectMode] = useState(false);
+    const [selectedMode,setSelectedMode] = useState('read');
 
     const [deleteConfirmId,setDeleteConfirmId] = useState(0);
 
 
     const handleSelectEntry = (id) => {
-        let newEntries = entries;
-
-        for(let entry of newEntries){
+        setEntries(entries.map((entry) => {
             if(entry.id === id){
                 entry.selected = !entry.selected;
             }
-        }
-
-        setEntries(newEntries);
+            return entry;
+        }));
     }
+
+    useEffect(() => {
+        console.log('ENTRIES',entries);
+    }, [entries]);
 
 
     const user = useSelector(state => state.authReducer.user);
@@ -188,7 +222,12 @@ const CalendarView = () => {
             return;
         }
 
-        setEntries(data.data);
+        setEntries(data.data.map(
+            (entry) => {
+                entry.selected = false;
+                return entry;
+            }
+        ));
         setTrainings(trainingsRes.data);
 
         setIsLoading(false);
@@ -220,7 +259,7 @@ const CalendarView = () => {
         load();
     }
 
-    const columns = DatesUtils.getDatesBetween(dateFrom,dateTo).map((date) => {
+    let columns = DatesUtils.getDatesBetween(dateFrom,dateTo).map((date) => {
 
         let caloriesFromTrainings = 0;
         for(let training of trainings){
@@ -236,7 +275,7 @@ const CalendarView = () => {
         >
             <h4 style={{textAlign:'center',paddingBottom:'5px'}} >{DatesUtils.getNameOfWeekDay(date)}</h4>
             <p style={{textAlign: 'center'}} >{date.format('DD-MM-YYYY')}</p>
-            <Tooltip title={'Wprowadź trening'} >
+           {/* <Tooltip title={'Wprowadź trening'} >
                 <IconButton
                     sx={{
                         position: 'absolute',
@@ -246,7 +285,7 @@ const CalendarView = () => {
                 >
                     <FitnessCenter />
                 </IconButton>
-            </Tooltip>
+            </Tooltip>*/}
             <DoubleProgress
                 label={'Kalorie:'}
                 val={getCaloriesPerDate(date,entries)}
@@ -255,7 +294,8 @@ const CalendarView = () => {
             {
                 mealTitles(user?.meals_per_day|| 1).map((title,index) =>
                     <GetMealFromData
-                        selectMode={selectMode}
+                        selectMode={selectedMode === 'select'}
+                        editMode={selectedMode === 'edit'}
                         onDelete={(id) => setDeleteConfirmId(id)}
                         date={date}
                         onCheck={(id) => handleSelectEntry(id)}
@@ -339,7 +379,7 @@ const CalendarView = () => {
 
                 let entriesIds;
                 console.log('ENT',entries);
-                if(selectMode)
+                if(selectedMode === 'select')
                     entriesIds = entries.filter((entry) => entry.selected).map((entry) => entry.id);
                 else
                     entriesIds = entries.map((entry) => entry.id);
@@ -395,26 +435,52 @@ const CalendarView = () => {
             } >
                 <h2>Kalendarz</h2>
                 <div style={{display: 'flex',flexDirection: 'row'}} >
-                    <Tooltip title="Przełącz tryb zaznaczania">
+
+
+                    <Tooltip title="Tryb odczytu">
                         <IconButton onClick={() =>{
-                            setSelectMode(!selectMode);
+                            setSelectedMode('read');
                         }} disabled={isLoading} >
                             {
-                                selectMode ? <Save /> : <CheckCircle />
+                                selectedMode === 'read' ? <ReadMore sx={{color: 'red'}} /> : <ReadMore />
                             }
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title={
-                        selectMode ? 'Generuj listę zakupów z wybranych posiłków' : 'Generuj listę zakupów z wybranych dni'
-                    }>
+
+                    <Tooltip title="Tryb edycji">
                         <IconButton onClick={() =>{
-                            setSelectedListIdOpen(true);
+                            setSelectedMode('edit');
                         }} disabled={isLoading} >
                             {
-                                selectMode ? <InsertDriveFile /> : <Description />
+                                selectedMode === 'edit' ? <Edit sx={{color: 'blue'}}  /> : <Edit />
                             }
                         </IconButton>
                     </Tooltip>
+                    <Tooltip title="Tryb zaznaczania">
+                        <IconButton onClick={() =>{
+                            setSelectedMode('select');
+                        }} disabled={isLoading} >
+                            {
+                                selectedMode === 'select' ? <CheckCircle sx={{color: 'orange'}}  /> : <CheckCircle />
+                            }
+                        </IconButton>
+                    </Tooltip>
+                    {
+                        selectedMode === 'select' && <Tooltip title={'Generuj listę zakupów z wybranych posiłków'}>
+                            <IconButton onClick={() =>{
+
+                                let selectedEntries = entries.filter((entry) => entry.selected);
+                                if(selectedEntries.length === 0) {
+                                    toast.error('Nie wybrano żadnych posiłków');
+                                    return;
+                                }
+
+                                setSelectedListIdOpen(true);
+                            }} disabled={isLoading} >
+                                <InsertDriveFile />
+                            </IconButton>
+                        </Tooltip>
+                    }
                 </div>
             </div>
             <div style={isMobile && {

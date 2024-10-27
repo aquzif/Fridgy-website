@@ -3,6 +3,7 @@ import NetworkUtils from "@/Utils/NetworkUtils";
 import {Checkbox, IconButton} from "@mui/material";
 import {DeleteForever, Edit} from "@mui/icons-material";
 import placeholderImage from "@/Assets/placeholder.png";
+import {useEffect} from "react";
 
 const Container = styled.div`
   height: 160px;
@@ -60,7 +61,7 @@ const RecipeDeleteButton = styled.div`
 `;
 
 
-const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck, onDelete}) => {
+const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, editMode, onCheck, onDelete, selected}) => {
 
     const handleClick = (e) => {
         if(e.target.tagName !== 'BUTTON'
@@ -72,6 +73,7 @@ const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck, 
         }
     }
 
+
     return <Container
         onClick={handleClick}
         style={{backgroundImage: `url(${NetworkUtils.fixBackendUrl(meal?.recipe?.image) || placeholderImage })`}}
@@ -82,32 +84,57 @@ const CalendarMealRecipe = ({meal,mealName,onClick, onEdit,selectMode, onCheck, 
         <RecipeName>
             {meal.recipe.name}
         </RecipeName>
-        <RecipeEditButton >
-            {
-                !selectMode &&
-                     <IconButton onClick={onEdit} >
-                            <Edit sx={{color: '#FACC2C', backgroundColor: 'white',borderRadius: '22px',padding: '2px'}} />
-                        </IconButton>
-
-            }
-
-        </RecipeEditButton>
-        <RecipeDeleteButton>
         {
-            selectMode ? <Checkbox
-                sx={{color: '#FACC2C'}}
-                checked={meal.selected}
-                onChange={(e) => onCheck(meal.id)}
+            selectMode && <>
+                <RecipeDeleteButton>
+                    {
+                        selectMode ? <Checkbox
+                                sx={{color: '#FACC2C'}}
+                                checked={selected}
+                                onChange={(e) => onCheck(meal.id)}
 
-            /> :
-                <IconButton onClick={() => {
-                    onDelete(meal.id);
-                }} >
-                    <DeleteForever  sx={{color: 'red', backgroundColor: 'white',borderRadius: '22px',padding: '2px'}} />
-                </IconButton>
+                            /> :
+                            <IconButton onClick={() => {
+                                onDelete(meal.id);
+                            }} >
+                                <DeleteForever  sx={{color: 'red', backgroundColor: 'white',borderRadius: '22px',padding: '2px'}} />
+                            </IconButton>
+                    }
+                </RecipeDeleteButton>
+            </>
         }
-        </RecipeDeleteButton>
+        {
+            editMode && <>
+            <RecipeEditButton >
+                {
+                    !selectMode &&
+                    <IconButton onClick={onEdit} >
+                        <Edit sx={{color: '#FACC2C', backgroundColor: 'white',borderRadius: '22px',padding: '2px'}} />
+                    </IconButton>
+
+                }
+
+            </RecipeEditButton>
+            <RecipeDeleteButton>
+                {
+                    selectMode ? <Checkbox
+                            sx={{color: '#FACC2C'}}
+                            checked={meal.selected}
+                            onChange={(e) => onCheck(meal.id)}
+
+                        /> :
+                        <IconButton onClick={() => {
+                            onDelete(meal.id);
+                        }} >
+                            <DeleteForever  sx={{color: 'red', backgroundColor: 'white',borderRadius: '22px',padding: '2px'}} />
+                        </IconButton>
+                }
+            </RecipeDeleteButton>
+
+            </>
+        }
     </Container>
+
 }
 
 export default CalendarMealRecipe;

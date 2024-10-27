@@ -53,6 +53,11 @@ const FastFoodEntryViewDialog = (
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="h6">
+                            Podsumowanie: {fastFoodEntry?.calendar_entry_fast_food_meals.reduce((acc,entry) => acc + entry.calories_per_ration * entry.quantity,0)} kcal
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="h6">
                             Pozycje:
                         </Typography>
                         <ul style={{
