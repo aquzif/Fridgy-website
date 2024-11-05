@@ -11,7 +11,7 @@ const RecipeSchema = Yup.object().shape({
         .max(120, 'Wartość nie może być większa niż 120'),
     serving_amount: Yup.number().required('Pole wymangane')
         .min(0, 'Wartość nie może być ujemna')
-        .max(10, 'Wartość nie może być większa niż 10'),
+        .max(20, 'Wartość nie może być większa niż 20'),
 
 
     //.matches(/^[a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s,.-]+$/, 'Nazwa zawiera niedozwolone znaki'),

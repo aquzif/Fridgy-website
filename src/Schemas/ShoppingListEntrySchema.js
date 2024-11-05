@@ -2,8 +2,8 @@ import * as Yup from 'yup';
 
 const ShoppingListEntrySchema = Yup.object().shape({
     product_name: Yup.string()
-        .required('Pole wymagane')
-        .matches(/^[a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s,.-]+$/, 'Nazwa zawiera niedozwolone znaki'),
+        .required('Pole wymagane'),
+        //.matches(/^[a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s,.-]+$/, 'Nazwa zawiera niedozwolone znaki'),
     type: Yup.string().required('Pole wymagane'),
     unit_id: Yup.number().when('type', {
         is: 'raw_product',
