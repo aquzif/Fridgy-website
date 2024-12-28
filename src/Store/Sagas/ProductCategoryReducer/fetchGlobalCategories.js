@@ -10,6 +10,7 @@ function* fetchGlobalCategories (){
 
     const response = yield ProductCategoriesAPI.getAll();
     console.log(response);
+
     if(response.status !== 200) {
         yield put(failure(response.data.message));
     }else

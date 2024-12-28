@@ -42,11 +42,20 @@ const Subtitle = styled.h4`
 
 
 
-const EntryRawProductContent = ({data, checked}) =>
+export const EntryRawProductContent = ({data, checked = false}) =>
     <>
         <Title checked={checked} >{data.product_name}</Title>
         <Subtitle checked={checked} >{data.amount} x {data.unit_name}</Subtitle>
     </>
+
+export const EntryProductContent = ({data, checked = false}) => {
+    return (
+        <>
+            <Title checked={checked} >{data.product_name}</Title>
+            <Subtitle checked={checked} >{data.amount} x {data.unit_name} ({data.amount * data.product_unit?.grams_per_unit} g)</Subtitle>
+        </>
+    )
+}
 
 const EntryRawContent = ({data, checked}) =>
     <>
@@ -106,6 +115,7 @@ const ShoppingListEntry = (
              onClick={onToggleCheck}
         >
             {data.type === 'raw_product' && <EntryRawProductContent data={data} checked={checked} />}
+            {data.type === 'product' && <EntryProductContent data={data} checked={checked} />}
             {data.type === 'raw' && <EntryRawContent data={data} checked={checked} />}
 
 

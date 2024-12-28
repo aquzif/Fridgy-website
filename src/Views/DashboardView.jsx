@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import styled from "styled-components";
 import TopBar from "@/Components/TopBar/TopBar";
 import {useMediaQuery} from "@/Hooks/useMediaQuery";
+import ShoppingListsAPI from "@/API/ShoppingListsAPI";
 
 
 const Container = styled.div`
@@ -41,6 +42,8 @@ const DashboardView = () => {
     }, [ loc ]);
 
     const onNavClick = () => setNavOpen(!navOpen);
+
+
 
 
     return (

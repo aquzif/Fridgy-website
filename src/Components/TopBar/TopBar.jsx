@@ -2,6 +2,8 @@ import styled from "styled-components";
 import {Icon} from "@iconify/react/offline";
 import {useMediaQuery} from "@/Hooks/useMediaQuery";
 import menuIcon from '@iconify/icons-mdi/menu';
+import barcodeScan from '@iconify/icons-mdi/barcode-scan';
+import {useNavigate} from "react-router-dom";
 
 
 const Container = styled.div`
@@ -39,12 +41,16 @@ const TopBar = ({
 }) => {
 
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const navigate = useNavigate();
+
+
 
     return (
         <Container>
             {isMobile && <>
                 <OpenIcon icon={menuIcon} onClick={onOpen} />
                 <Logo>Fridgy</Logo>
+                <OpenIcon icon={barcodeScan} onClick={() => navigate('/skaner')} />
             </>}
 
 

@@ -7,3 +7,5 @@ const fetchGlobalUnitFailureAction = (state, action) => {
     state.errorMessage = payload;
 
 }
+
+export default fetchGlobalUnitFailureAction;

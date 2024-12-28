@@ -4,6 +4,8 @@ import AuthLogoutAction from "@/Store/Actions/AuthReducer/AuthLogoutAction";
 import AuthExpireAction from "@/Store/Actions/AuthReducer/AuthExpireAction";
 import AuthClearLogoutReasonAction from "@/Store/Actions/AuthReducer/AuthClearLogoutReasonAction";
 import LocalStorageUtils from "@/Utils/LocalStorageUtils";
+import AuthRefreshUserAction from "@/Store/Actions/AuthReducer/AuthRefreshUserAction";
+import AuthRefreshUserSuccess from "@/Store/Actions/AuthReducer/AuthRefreshUserSuccess";
 
 
 const initialState ={
@@ -21,9 +23,11 @@ export const authSlice = createSlice({
         logout: AuthLogoutAction,
         expire: AuthExpireAction,
         clearLogoutReason: AuthClearLogoutReasonAction,
+        refreshUser: AuthRefreshUserAction,
+        refreshSuccess: AuthRefreshUserSuccess,
     }
 })
 
 
-export const {login, logout,expire,clearLogoutReason} = authSlice.actions;
+export const {refreshSuccess,refreshUser,login, logout,expire,clearLogoutReason} = authSlice.actions;
 export default authSlice.reducer;

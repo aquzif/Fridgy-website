@@ -4,6 +4,7 @@ export default class AuthAPI {
 
 
     static async login(email, password) {
+
         return await RequestUtils.post('/api/login', {
             email: email,
             password: password

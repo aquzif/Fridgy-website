@@ -9,6 +9,13 @@ export default class ArrayUtils {
         }, {});
     }
 
+    static objectToArray(object) {
+        return Object.keys(object).map(key => {
+            return {key: key, value: object[key]}
+        })
+    }
+
+
 
 
 }

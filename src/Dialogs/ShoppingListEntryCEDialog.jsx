@@ -45,7 +45,7 @@ const ShoppingListEntryCEDialog = (
         shoppingLists,
         selectedShoppingListID
     } = useSelector(state => state.shoppingListReducer);
-    const selectedShoppingList = shoppingLists.find((shoppingList) => shoppingList.id === selectedShoppingListID);
+    const selectedShoppingList = shoppingLists?.find((shoppingList) => shoppingList.id === selectedShoppingListID);
 
     const {
         globalUnits
@@ -55,7 +55,7 @@ const ShoppingListEntryCEDialog = (
         productCategories
     } = useSelector(state => state.productCategoryReducer);
 
-    const defaultUnit = globalUnits.find((unit) => unit.default);
+    const defaultUnit = globalUnits?.find((unit) => unit.default);
 
 
     const mainInput = useRef(null);
@@ -218,7 +218,7 @@ const ShoppingListEntryCEDialog = (
                                                 onChange={formik.handleChange}
                                                 error={formik.touched.unit_id && Boolean(formik.errors.unit_id)}
                                             >
-                                                {globalUnits.map((unit) => <MenuItem key={unit.id} value={unit.id}>{unit.name}</MenuItem>)}
+                                                {globalUnits?.map((unit) => <MenuItem key={unit.id} value={unit.id}>{unit.name}</MenuItem>)}
                                             </Select>
                                             <FormHelperText>{formik.touched.unit_id && formik.errors.unit_id}</FormHelperText>
                                         </FormControl>

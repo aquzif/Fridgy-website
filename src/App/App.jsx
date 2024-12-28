@@ -8,6 +8,8 @@ import {useServiceWorker} from "@/Hooks/useServiceWorker";
 import {useEffect} from "react";
 import {ThemeProvider} from "@mui/material";
 import theme from "@/Theme/theme";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import {LocalizationProvider} from "@mui/x-date-pickers";
 
 
 const App = () => {
@@ -24,13 +26,14 @@ const App = () => {
 
     return (
         <>
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <Toaster />
-                    <Router />
-                </Provider>
-            </ThemeProvider>
-
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <ThemeProvider theme={theme}>
+                    <Provider store={store}>
+                        <Toaster />
+                        <Router />
+                    </Provider>
+                </ThemeProvider>
+            </LocalizationProvider>
         </>
     );
 }

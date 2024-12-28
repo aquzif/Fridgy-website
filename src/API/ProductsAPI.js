@@ -1,8 +1,22 @@
 import RequestUtils from "@/Utils/RequestUtils";
 
 export default class ProductsAPI {
-    static async getAll() {
-        return await RequestUtils.apiGet('/api/product');
+    static async getAll(page = 1) {
+        return await RequestUtils.apiGet(`/api/product`);
+    }
+
+    static async getNutrition(name) {
+        const result = await RequestUtils.apiGet(`/api/ai/nutrition?product=${name}`);
+
+        if(result.status >= 300){
+            throw new Error('ProductsAPI.getNutrition() failed, status: ' + result.status);
+        }
+
+        if(result.data.status !== 'FOUND'){
+            throw new Error('ProductsAPI.getNutrition() failed, status: ' + result.data.status);
+        }
+
+        return result.data;
     }
 
     static async search(search) {
@@ -17,7 +31,7 @@ export default class ProductsAPI {
         const result = await RequestUtils.apiPost('/api/product', data);
 
         if(result.status !== 201){
-            throw new Error('ProductCategoriesAPI.create() failed, status: ' + result.status);
+            throw new Error('ProductsAPI.create() failed, status: ' + result.status);
         }
 
         return result;
