@@ -8,7 +8,7 @@ import {
     DialogTitle, IconButton,
     LinearProgress,
     Tab,
-    Tabs
+    Tabs, TextField
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import styled from "styled-components";
@@ -29,7 +29,7 @@ const FlexContainer = styled.div`
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    //align-items: center;
 `;
 
 const FastFoodCardSelector = styled.div`
@@ -67,6 +67,13 @@ const StoreName = styled.p`
   border-bottom-left-radius: 20px;
 `;
 
+const ListTitle = styled.h2`
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+`;
+
 const CalendarEntryFromFastFoodCEDialog = (
     {
         open,
@@ -83,6 +90,7 @@ const CalendarEntryFromFastFoodCEDialog = (
     const [stores,setStores] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [tab, setTab] = useState(0);
+    const [search,setSearch] = useState('');
 
     const loadMeals = async () => {
         const {data,code} = await FastFoodStoreMealsAPI.getAll(selectedFastFoodStore.id);
@@ -198,7 +206,10 @@ const CalendarEntryFromFastFoodCEDialog = (
     return (
         <Dialog
             open={open}
-            maxWidth={stage === 0 ? 'md' : 'lg'}
+
+            fullScreen={stage === 1}
+
+
             fullWidth
             onClose={onClose}
         >
@@ -224,10 +235,11 @@ const CalendarEntryFromFastFoodCEDialog = (
                                 </FastFoodCardSelector>
                             </div>))
                         }
-                    </FlexContainer>) : (<div>
-                        <Box sx={{ width: '100%' }}>
+                    </FlexContainer>) : (<FlexContainer>
+                        <Box sx={{ width: 'calc(100% - 400px)' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tab} onChange={handleTabChange} centered={true} >
+                                    <Tab label="Wszystkie pozycje" />
                                     <Tab label="Zestawy" />
                                     {
                                         fastFoodMealCategories.map((category) => {
@@ -238,6 +250,40 @@ const CalendarEntryFromFastFoodCEDialog = (
                                 </Tabs>
                             </Box>
                             <CustomTabPanel value={tab} index={0}>
+                                <h2>Wszystkie pozycje</h2>
+                                <div style={{textAlign: 'center'}} >
+                                    <TextField
+                                        label="Szukaj"
+                                        variant="standard"
+                                        sx={{margin: '10px auto',maxWidth: '500px'}}
+                                        fullWidth
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                    />
+                                    {
+                                        fastFoodMeals
+                                            //filter via search
+                                            .filter((meal) => {
+                                                return meal.name.toLowerCase().includes(search.toLowerCase());
+                                            })
+                                            .map((meal) =>
+                                            <ItemCard fastFood={meal}
+                                                      onChange={(val) => {
+                                                          const newMeals = fastFoodMeals.map((m) => {
+                                                              if(m.id === meal.id){
+                                                                  m.quantity = val;
+                                                              }
+                                                              return m;
+                                                          });
+                                                          setFastFoodMeals(newMeals);
+                                                      }}
+                                            />
+                                        )
+                                    }
+                                </div>
+
+                            </CustomTabPanel>
+                            <CustomTabPanel value={tab} index={1}>
                                 <h2>Zestawy</h2>
                                 <ListContainer>
                                     {
@@ -260,7 +306,7 @@ const CalendarEntryFromFastFoodCEDialog = (
                             </CustomTabPanel>
                             {
                                 fastFoodMealCategories.map((category,index) => {
-                                    return <CustomTabPanel value={tab} index={index+1}>
+                                    return <CustomTabPanel value={tab} index={index+2}>
                                         <h2>{category}</h2>
                                         <ListContainer >
                                             {
@@ -285,13 +331,33 @@ const CalendarEntryFromFastFoodCEDialog = (
                                 })
                             }
                         </Box>
-                    </div>)
+                        <Box width={'400px'} >
+                            <ListTitle>Podsumowanie</ListTitle>
+                            {
+                                fastFoodMeals.filter((meal) => meal.quantity > 0).map((meal) => {
+                                    return <ItemCard fastFood={meal} listMode={true}
+                                        onChange={(val) => {
+                                            const newMeals = fastFoodMeals.map((m) => {
+                                                if(m.id === meal.id){
+                                                    m.quantity = val;
+                                                }
+                                                return m;
+                                            });
+                                            setFastFoodMeals(newMeals);
+                                        }}
+                                    />
+                                } )
+                            }
+                        </Box>
+                    </FlexContainer>)
                 }
 
             </DialogContent>
             <DialogActions>
                 <Button color={'warning'} onClick={onClose}>Anuluj</Button>
-                <Button onClick={handleSave} >Zapisz</Button>
+                {
+                    stage !== 0 && <Button onClick={handleSave} >Zapisz</Button>
+                }
             </DialogActions>
         </Dialog>
     )
@@ -302,27 +368,37 @@ const CalendarEntryFromFastFoodCEDialog = (
 const ItemCard = (
     {
         fastFood,
-        onChange
+        onChange,
+        listMode = false
     }
 ) => {
-    return <Card sx={{ width: 270,marginBottom: "30px" }}>
+    return <Card sx={{ width: listMode ? '100%' : '300px'
+        ,marginBottom: "30px",
+        ...(listMode ? {
+            display: 'flex',
+            flexDirection: 'row',
+        }:{})
+    }}>
         <CardMedia
-            sx={{ height: 160 }}
+            sx={listMode ? { width: 60,height:60,margin: '10px' } : { height: 160 }}
             image={NetworkUtils.fixBackendUrl(fastFood.image) || placeholder}
             title={fastFood.name}
         />
         <div
             style={{
-                padding: '10px 20px 0px 20px',
-                fontWeight: 'bold',
-                fontSize: '1.2rem',
+                padding: listMode ? '10px 0 0px 0' : '10px 20px 0px 20px',
+                fontWeight: listMode ? 'normal' : 'bold',
+                fontSize: listMode ? '0.8rem' : '1.2rem',
+                //fit all remain space
+                flex: 1,
             }}
             >{fastFood.name} {
+                !listMode && (
             fastFood.calories_per_item ? `(${Math.ceil(fastFood.calories_per_item)} kcal)` : `(${
                 Math.ceil(fastFood.meals.reduce((a,b) => {
                     return a + b.quantity * b.meal.calories_per_item
                 },0))
-            } kcal)`
+            } kcal)`)
 
         } </div>
         <CardActions>
