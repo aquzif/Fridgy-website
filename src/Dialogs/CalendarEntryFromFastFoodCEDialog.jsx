@@ -260,26 +260,28 @@ const CalendarEntryFromFastFoodCEDialog = (
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                     />
-                                    {
-                                        fastFoodMeals
-                                            //filter via search
-                                            .filter((meal) => {
-                                                return meal.name.toLowerCase().includes(search.toLowerCase());
-                                            })
-                                            .map((meal) =>
-                                            <ItemCard fastFood={meal}
-                                                      onChange={(val) => {
-                                                          const newMeals = fastFoodMeals.map((m) => {
-                                                              if(m.id === meal.id){
-                                                                  m.quantity = val;
-                                                              }
-                                                              return m;
-                                                          });
-                                                          setFastFoodMeals(newMeals);
-                                                      }}
-                                            />
-                                        )
-                                    }
+                                    <ListContainer>
+                                        {
+                                            fastFoodMeals
+                                                //filter via search
+                                                .filter((meal) => {
+                                                    return meal.name.toLowerCase().includes(search.toLowerCase());
+                                                })
+                                                .map((meal) =>
+                                                <ItemCard fastFood={meal}
+                                                          onChange={(val) => {
+                                                              const newMeals = fastFoodMeals.map((m) => {
+                                                                  if(m.id === meal.id){
+                                                                      m.quantity = val;
+                                                                  }
+                                                                  return m;
+                                                              });
+                                                              setFastFoodMeals(newMeals);
+                                                          }}
+                                                />
+                                            )
+                                        }
+                                    </ListContainer>
                                 </div>
 
                             </CustomTabPanel>
@@ -333,6 +335,16 @@ const CalendarEntryFromFastFoodCEDialog = (
                         </Box>
                         <Box width={'400px'} >
                             <ListTitle>Podsumowanie</ListTitle>
+                            <ListTitle style={{fontWeight: 'normal',fontSize: '1rem'}} >
+                                {
+                                    (fastFoodMeals.reduce((a,b) => {
+                                            return a + (b.quantity||0) * b.calories_per_item
+                                        }
+                                        ,0)||0) + (fastFoodSets.reduce((a,b) => {
+                                            return a + (b.quantity||0) * b.calories_per_item
+                                        }
+                                        ,0)||0)
+                                } kcal</ListTitle>
                             {
                                 fastFoodMeals.filter((meal) => meal.quantity > 0).map((meal) => {
                                     return <ItemCard fastFood={meal} listMode={true}
