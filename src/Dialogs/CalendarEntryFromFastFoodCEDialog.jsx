@@ -335,6 +335,7 @@ const CalendarEntryFromFastFoodCEDialog = (
                         </Box>
                         <Box width={'400px'} >
                             <ListTitle>Podsumowanie</ListTitle>
+                            
                             <ListTitle style={{fontWeight: 'normal',fontSize: '1rem'}} >
                                 {
                                     (fastFoodMeals.reduce((a,b) => {
