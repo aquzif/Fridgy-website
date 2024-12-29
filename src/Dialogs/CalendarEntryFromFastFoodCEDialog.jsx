@@ -208,6 +208,7 @@ const CalendarEntryFromFastFoodCEDialog = (
             open={open}
 
             fullScreen={stage === 1}
+            maxWidth={'md'}
 
 
             fullWidth
@@ -335,7 +336,7 @@ const CalendarEntryFromFastFoodCEDialog = (
                         </Box>
                         <Box width={'400px'} >
                             <ListTitle>Podsumowanie</ListTitle>
-                            
+
                             <ListTitle style={{fontWeight: 'normal',fontSize: '1rem'}} >
                                 {
                                     (fastFoodMeals.reduce((a,b) => {
