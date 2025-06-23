@@ -11,6 +11,7 @@ import {
     Tabs, TextField
 } from "@mui/material";
 import {useEffect, useState} from "react";
+import {useMediaQuery} from "@/Hooks/useMediaQuery";
 import styled from "styled-components";
 import FastFoodStoresAPI from "@/API/FastFoodStores/FastFoodStoresAPI";
 import NetworkUtils from "@/Utils/NetworkUtils";
@@ -33,15 +34,15 @@ const FlexContainer = styled.div`
 `;
 
 const FastFoodCardSelector = styled.div`
-  width: 300px;
-  height: 180px;
-  border-radius: 10px;
-  border: 1px solid #d1d1d1;
-  margin: 10px;
-  background-size: cover;
-  background-position: center;
-  background-image: url(${props => props.img});
-  position: relative;
+    width: 300px;
+    height: 180px;
+    border-radius: 10px;
+    border: 1px solid #d1d1d1;
+    margin: 10px;
+    background-size: cover;
+    background-position: center;
+    background-image: url(${props => props.img});
+    position: relative;
 `;
 
 const ListContainer = styled.div`
@@ -61,10 +62,10 @@ const StoreName = styled.p`
     max-width: 80%;
     text-overflow: ellipsis;
     white-space: nowrap;
-  overflow: hidden;
-  position: absolute;
-  bottom: 0;
-  border-bottom-left-radius: 20px;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    border-bottom-left-radius: 20px;
 `;
 
 const ListTitle = styled.h2`
@@ -91,6 +92,8 @@ const CalendarEntryFromFastFoodCEDialog = (
     const [isLoading, setIsLoading] = useState(true);
     const [tab, setTab] = useState(0);
     const [search,setSearch] = useState('');
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const [showSummary,setShowSummary] = useState(false);
 
     const loadMeals = async () => {
         const {data,code} = await FastFoodStoreMealsAPI.getAll(selectedFastFoodStore.id);
@@ -123,6 +126,7 @@ const CalendarEntryFromFastFoodCEDialog = (
     const load = async () => {
         setIsLoading(true);
         setStage(0);
+        setShowSummary(false);
         setTab(0);
         setFastFoodMeals([]);
         setFastFoodSets([]);
@@ -203,12 +207,143 @@ const CalendarEntryFromFastFoodCEDialog = (
 
     }
 
+    const MealsSection = () => (
+        <Box sx={{ width: isMobile ? '100%' : 'calc(100% - 400px)' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={tab} onChange={handleTabChange} centered={true} >
+                    <Tab label="Wszystkie pozycje" />
+                    <Tab label="Zestawy" />
+                    {
+                        fastFoodMealCategories.map((category) => {
+                            return <Tab label={category}  />
+                        })
+
+                    }
+                </Tabs>
+            </Box>
+            <CustomTabPanel value={tab} index={0}>
+                <h2>Wszystkie pozycje</h2>
+                <div style={{textAlign: 'center'}} >
+                    <TextField
+                        label="Szukaj"
+                        variant="standard"
+                        sx={{margin: '10px auto',maxWidth: '500px'}}
+                        fullWidth
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <ListContainer>
+                        {
+                            fastFoodMeals
+                                //filter via search
+                                .filter((meal) => {
+                                    return meal.name.toLowerCase().includes(search.toLowerCase());
+                                })
+                                .map((meal) =>
+                                    <ItemCard fastFood={meal}
+                                              onChange={(val) => {
+                                                  const newMeals = fastFoodMeals.map((m) => {
+                                                      if(m.id === meal.id){
+                                                          m.quantity = val;
+                                                      }
+                                                      return m;
+                                                  });
+                                                  setFastFoodMeals(newMeals);
+                                              }}
+                                    />
+                                )
+                        }
+                    </ListContainer>
+                </div>
+
+            </CustomTabPanel>
+            <CustomTabPanel value={tab} index={1}>
+                <h2>Zestawy</h2>
+                <ListContainer>
+                    {
+                        fastFoodSets.map((set) =>
+                            <ItemCard fastFood={set}
+                                      onChange={(val) => {
+                                          const newSets = fastFoodSets.map((m) => {
+                                              if(m.id === set.id){
+                                                  m.quantity = val;
+                                              }
+                                              return m;
+                                          });
+                                          setFastFoodSets(newSets);
+
+                                      }}
+
+                            />)
+                    }
+                </ListContainer>
+            </CustomTabPanel>
+            {
+                fastFoodMealCategories.map((category,index) => {
+                    return <CustomTabPanel value={tab} index={index+2}>
+                        <h2>{category}</h2>
+                        <ListContainer >
+                            {
+                                fastFoodMeals.filter((meal) => {
+                                    return meal.category === category;
+                                }).map((meal) =>
+                                    <ItemCard fastFood={meal}
+                                              onChange={(val) => {
+                                                  const newMeals = fastFoodMeals.map((m) => {
+                                                      if(m.id === meal.id){
+                                                          m.quantity = val;
+                                                      }
+                                                      return m;
+                                                  });
+                                                  setFastFoodMeals(newMeals);
+                                              }}
+                                    />
+                                )
+                            }
+                        </ListContainer>
+                    </CustomTabPanel>
+                })
+            }
+        </Box>
+    );
+
+    const SummarySection = () => (
+        <Box sx={{ width: isMobile ? '100%' : '400px' }}>
+            <ListTitle>Podsumowanie</ListTitle>
+
+            <ListTitle style={{fontWeight: 'normal',fontSize: '1rem'}} >
+                {
+                    (fastFoodMeals.reduce((a,b) => {
+                            return a + (b.quantity||0) * b.calories_per_item
+                        }
+                        ,0)||0) + (fastFoodSets.reduce((a,b) => {
+                            return a + (b.quantity||0) * b.calories_per_item
+                        }
+                        ,0)||0)
+                } kcal</ListTitle>
+            {
+                fastFoodMeals.filter((meal) => meal.quantity > 0).map((meal) => {
+                    return <ItemCard fastFood={meal} listMode={true}
+                                     onChange={(val) => {
+                                         const newMeals = fastFoodMeals.map((m) => {
+                                             if(m.id === meal.id){
+                                                 m.quantity = val;
+                                             }
+                                             return m;
+                                         });
+                                         setFastFoodMeals(newMeals);
+                                     }}
+                    />
+                } )
+            }
+        </Box>
+    );
+
     return (
         <Dialog
             open={open}
 
             fullScreen={stage === 1}
-            maxWidth={'md'}
 
 
             fullWidth
@@ -225,10 +360,11 @@ const CalendarEntryFromFastFoodCEDialog = (
                         {
                             stores.map((store) => (<div key={store.id}  >
                                 <FastFoodCardSelector  img={NetworkUtils.fixBackendUrl(store?.image)|| placeholderImage }
-                                    onClick={() => {
-                                        setSelectedFastFoodStore(store);
-                                        setStage(1);
-                                    }}
+                                                       onClick={() => {
+                                                           setSelectedFastFoodStore(store);
+                                                           setStage(1);
+                                                           setShowSummary(false);
+                                                       }}
                                 >
                                     <StoreName>
                                         {store.name}
@@ -236,139 +372,27 @@ const CalendarEntryFromFastFoodCEDialog = (
                                 </FastFoodCardSelector>
                             </div>))
                         }
-                    </FlexContainer>) : (<FlexContainer>
-                        <Box sx={{ width: 'calc(100% - 400px)' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={tab} onChange={handleTabChange} centered={true} >
-                                    <Tab label="Wszystkie pozycje" />
-                                    <Tab label="Zestawy" />
-                                    {
-                                        fastFoodMealCategories.map((category) => {
-                                            return <Tab label={category}  />
-                                        })
-
-                                    }
-                                </Tabs>
-                            </Box>
-                            <CustomTabPanel value={tab} index={0}>
-                                <h2>Wszystkie pozycje</h2>
-                                <div style={{textAlign: 'center'}} >
-                                    <TextField
-                                        label="Szukaj"
-                                        variant="standard"
-                                        sx={{margin: '10px auto',maxWidth: '500px'}}
-                                        fullWidth
-                                        value={search}
-                                        onChange={(e) => setSearch(e.target.value)}
-                                    />
-                                    <ListContainer>
-                                        {
-                                            fastFoodMeals
-                                                //filter via search
-                                                .filter((meal) => {
-                                                    return meal.name.toLowerCase().includes(search.toLowerCase());
-                                                })
-                                                .map((meal) =>
-                                                <ItemCard fastFood={meal}
-                                                          onChange={(val) => {
-                                                              const newMeals = fastFoodMeals.map((m) => {
-                                                                  if(m.id === meal.id){
-                                                                      m.quantity = val;
-                                                                  }
-                                                                  return m;
-                                                              });
-                                                              setFastFoodMeals(newMeals);
-                                                          }}
-                                                />
-                                            )
-                                        }
-                                    </ListContainer>
-                                </div>
-
-                            </CustomTabPanel>
-                            <CustomTabPanel value={tab} index={1}>
-                                <h2>Zestawy</h2>
-                                <ListContainer>
-                                    {
-                                        fastFoodSets.map((set) =>
-                                            <ItemCard fastFood={set}
-                                                      onChange={(val) => {
-                                                            const newSets = fastFoodSets.map((m) => {
-                                                                if(m.id === set.id){
-                                                                    m.quantity = val;
-                                                                }
-                                                                return m;
-                                                            });
-                                                            setFastFoodSets(newSets);
-
-                                                      }}
-
-                                            />)
-                                    }
-                                </ListContainer>
-                            </CustomTabPanel>
-                            {
-                                fastFoodMealCategories.map((category,index) => {
-                                    return <CustomTabPanel value={tab} index={index+2}>
-                                        <h2>{category}</h2>
-                                        <ListContainer >
-                                            {
-                                                fastFoodMeals.filter((meal) => {
-                                                    return meal.category === category;
-                                                }).map((meal) =>
-                                                    <ItemCard fastFood={meal}
-                                                        onChange={(val) => {
-                                                            const newMeals = fastFoodMeals.map((m) => {
-                                                                if(m.id === meal.id){
-                                                                    m.quantity = val;
-                                                                }
-                                                                return m;
-                                                            });
-                                                            setFastFoodMeals(newMeals);
-                                                        }}
-                                                    />
-                                                )
-                                            }
-                                        </ListContainer>
-                                    </CustomTabPanel>
-                                })
-                            }
-                        </Box>
-                        <Box width={'400px'} >
-                            <ListTitle>Podsumowanie</ListTitle>
-
-                            <ListTitle style={{fontWeight: 'normal',fontSize: '1rem'}} >
-                                {
-                                    (fastFoodMeals.reduce((a,b) => {
-                                            return a + (b.quantity||0) * b.calories_per_item
-                                        }
-                                        ,0)||0) + (fastFoodSets.reduce((a,b) => {
-                                            return a + (b.quantity||0) * b.calories_per_item
-                                        }
-                                        ,0)||0)
-                                } kcal</ListTitle>
-                            {
-                                fastFoodMeals.filter((meal) => meal.quantity > 0).map((meal) => {
-                                    return <ItemCard fastFood={meal} listMode={true}
-                                        onChange={(val) => {
-                                            const newMeals = fastFoodMeals.map((m) => {
-                                                if(m.id === meal.id){
-                                                    m.quantity = val;
-                                                }
-                                                return m;
-                                            });
-                                            setFastFoodMeals(newMeals);
-                                        }}
-                                    />
-                                } )
-                            }
-                        </Box>
-                    </FlexContainer>)
+                    </FlexContainer>) : (
+                        isMobile ? (
+                            showSummary ? <SummarySection /> : <MealsSection />
+                        ) : (
+                            <FlexContainer>
+                                <MealsSection />
+                                <SummarySection />
+                            </FlexContainer>
+                        )
+                    )
                 }
 
             </DialogContent>
             <DialogActions>
                 <Button color={'warning'} onClick={onClose}>Anuluj</Button>
+                {
+                    stage === 1 && isMobile &&
+                    <Button onClick={() => setShowSummary(!showSummary)}>
+                        {showSummary ? 'Wróć do listy' : 'Podsumowanie'}
+                    </Button>
+                }
                 {
                     stage !== 0 && <Button onClick={handleSave} >Zapisz</Button>
                 }
@@ -406,13 +430,13 @@ const ItemCard = (
                 //fit all remain space
                 flex: 1,
             }}
-            >{fastFood.name} {
-                !listMode && (
-            fastFood.calories_per_item ? `(${Math.ceil(fastFood.calories_per_item)} kcal)` : `(${
-                Math.ceil(fastFood.meals.reduce((a,b) => {
-                    return a + b.quantity * b.meal.calories_per_item
-                },0))
-            } kcal)`)
+        >{fastFood.name} {
+            !listMode && (
+                fastFood.calories_per_item ? `(${Math.ceil(fastFood.calories_per_item)} kcal)` : `(${
+                    Math.ceil(fastFood.meals.reduce((a,b) => {
+                        return a + b.quantity * b.meal.calories_per_item
+                    },0))
+                } kcal)`)
 
         } </div>
         <CardActions>
