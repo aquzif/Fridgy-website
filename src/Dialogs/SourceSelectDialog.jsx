@@ -14,6 +14,7 @@ import {Icon} from "@iconify/react/offline";
 import receiptText from "@iconify/icons-mdi/receipt-text";
 import burgerIcon from "@iconify/icons-mdi/burger";
 import fruitWatermelon from "@iconify/icons-mdi/fruit-watermelon";
+import plusIcon from "@iconify/icons-mdi/plus";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Grow /*direction="down"*/ ref={ref} {...props} />;
@@ -116,12 +117,19 @@ const SourceSelectDialog = (
                         title="Przepisy"
                         icon={receiptText}
                     />
-                    <SourceSelector
+                <SourceSelector
                         onClick={() => onSelect('fastfood')}
                         bgColor={'#ffde87'}
                         hoverBg={'#c7ac67'}
                         title="Fast Food"
                         icon={burgerIcon}
+                    />
+                    <SourceSelector
+                        onClick={() => onSelect('quick')}
+                        bgColor={'#8bc34a'}
+                        hoverBg={'#6f9c39'}
+                        title="Szybkie dodawanie"
+                        icon={plusIcon}
                     />
                     <SourceSelector
                         onClick={() => onSelect('source')}
