@@ -5,23 +5,33 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 
 const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
+
+    let slotProps = {
+        incrementButton: {
+            children: <AddIcon fontSize="small" />,
+            className: 'increment',
+        },
+        decrementButton: {
+            children: <RemoveIcon fontSize="small" />,
+        },
+    };
+
+    if(props?.withoutButtons)
+        slotProps = {
+            incrementButton: { style: { display: 'none' } },
+            decrementButton: { style: { display: 'none' } },
+        };
+
     return (
         <BaseNumberInput
             slots={{
                 root: StyledInputRoot,
                 input: StyledInput,
+
                 incrementButton: StyledButton,
                 decrementButton: StyledButton,
             }}
-            slotProps={{
-                incrementButton: {
-                    children: <AddIcon fontSize="small" />,
-                    className: 'increment',
-                },
-                decrementButton: {
-                    children: <RemoveIcon fontSize="small" />,
-                },
-            }}
+            slotProps={slotProps}
             {...props}
             ref={ref}
         />

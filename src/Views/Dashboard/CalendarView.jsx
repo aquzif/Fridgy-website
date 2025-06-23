@@ -26,6 +26,8 @@ import CalendarMealRecipe from "@/Components/CalendarMealEntry/CalendarMealRecip
 import RecipeSelectorDialog from "@/Dialogs/RecipeSelectorDialog";
 import SourceSelectDialog from "@/Dialogs/SourceSelectDialog";
 import {Swiper, SwiperSlide} from "swiper/react";
+import CalendarEntryFromIngredientsCEDialog from "@/Dialogs/CalendarEntryFromIngredientsCEDialog";
+
 
 import "swiper/css";
 import {useNavigate} from "react-router-dom";
@@ -259,6 +261,11 @@ const CalendarView = () => {
         load();
     }
 
+    const selectIngredients = (data) => {
+        console.log('INGREDIENTS', data);
+        handleCloseSourceInputDialog();
+    }
+
     let columns = DatesUtils.getDatesBetween(dateFrom,dateTo).map((date) => {
 
         let caloriesFromTrainings = 0;
@@ -403,6 +410,11 @@ const CalendarView = () => {
                 setOpenSourceSelectDialog(false);
                 setSelectedSource(source)
             }}
+        />
+        <CalendarEntryFromIngredientsCEDialog
+            open={selectedSource === 'source'}
+            onClose={handleCloseSourceInputDialog}
+            onSelect={selectIngredients}
         />
         <CalendarEntryFromFastFoodCEDialog
             open={selectedSource === 'fastfood'}
