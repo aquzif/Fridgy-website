@@ -38,6 +38,7 @@ import CalendarEntryFromFastFoodCEDialog from "@/Dialogs/CalendarEntryFromFastFo
 import CalendarEntryFastFoodAPI from "@/API/CalendarEntryFastFoodAPI";
 import FastFoodEntryViewDialog from "@/Dialogs/FastFoodEntryViewDialog";
 import TrainingsAPI from "@/API/TrainingsAPI";
+import CalendarQuickAddDialog from "@/Dialogs/CalendarQuickAddDialog";
 
 const DateContainer = styled.div`
   
@@ -419,6 +420,10 @@ const CalendarView = () => {
             open={selectedSource === 'recipe'}
             onClose={handleCloseSourceInputDialog}
             onSelect={selectRecipe}
+        />
+        <CalendarQuickAddDialog
+            open={selectedSource === 'quick'}
+            onClose={handleCloseSourceInputDialog}
         />
         <div style={!isMobile && {
             display: 'flex',
